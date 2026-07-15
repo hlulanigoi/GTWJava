@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand — matching SA eRide green palette -->
+    <color name="primary">#2E7D32</color>
+    <color name="primary_dark">#1B5E20</color>
+    <color name="primary_light">#E8F5E9</color>
+    <color name="primary_medium">#4CAF50</color>
+    <color name="accent">#FFC107</color>
+    <color name="accent_dark">#F9A825</color>
+
+    <!-- Status colors -->
+    <color name="status_pending">#FF9800</color>
+    <color name="status_matched">#1565C0</color>
+    <color name="status_collected">#6A1B9A</color>
+    <color name="status_delivered">#2E7D32</color>
+    <color name="status_cancelled">#C62828</color>
+    <color name="status_active">#2E7D32</color>
+
+    <!-- UI -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="background">#F4F6F8</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="card_stroke">#E0E0E0</color>
+    <color name="input_bg">#F9FAFB</color>
+    <color name="toolbar_bg">#2E7D32</color>
+
+    <!-- Admin -->
+    <color name="admin_primary">#1B5E20</color>
+    <color name="admin_accent">#FF6F00</color>
+    <color name="stat_blue">#1565C0</color>
+    <color name="stat_purple">#6A1B9A</color>
+    <color name="stat_green">#2E7D32</color>
+    <color name="stat_orange">#E65100</color>
+</resources>

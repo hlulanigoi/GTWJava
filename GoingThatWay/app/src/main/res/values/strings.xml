@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Going That Way</string>
+
+    <!-- Auth -->
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email address</string>
+    <string name="password">Password</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="dont_have_account">Don\'t have an account? Sign Up</string>
+    <string name="already_have_account">Already have an account? Log In</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_parcels">Parcels</string>
+    <string name="nav_trips">Trips</string>
+    <string name="nav_tickets">Tickets</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Parcels -->
+    <string name="create_parcel">Send a Parcel</string>
+    <string name="parcel_description">What are you sending?</string>
+    <string name="pickup_address">Pickup Address</string>
+    <string name="destination_address">Destination Address</string>
+    <string name="weight_kg">Weight (kg)</string>
+    <string name="special_instructions">Special Instructions (optional)</string>
+    <string name="proceed_to_payment">Proceed to Payment</string>
+    <string name="no_parcels">No parcels yet.\nTap + to send your first parcel!</string>
+
+    <!-- Trips -->
+    <string name="post_trip">Post My Trip</string>
+    <string name="origin_address">From (Origin)</string>
+    <string name="departure_time">Departure Date &amp; Time</string>
+    <string name="arrival_time">Arrival Date &amp; Time (optional)</string>
+    <string name="transport_mode">How are you travelling?</string>
+    <string name="capacity_kg">Available capacity (kg)</string>
+    <string name="notes">Notes (optional)</string>
+    <string name="find_parcels">Find Matching Parcels</string>
+    <string name="no_trips">No trips yet.\nTap + to post your first trip!</string>
+
+    <!-- Tickets -->
+    <string name="buy_ticket">Buy a Carrier Ticket</string>
+    <string name="ticket_info">You need a ticket to collect and carry parcels on your trips.</string>
+    <string name="no_tickets">No tickets yet. Buy one to start carrying parcels!</string>
+
+    <!-- Payment -->
+    <string name="payment_details">Bank Transfer Details</string>
+    <string name="amount_due">Amount Due</string>
+    <string name="your_payment_reference">Your Payment Reference</string>
+    <string name="confirm_payment">I Have Paid — Confirm</string>
+
+    <!-- Admin -->
+    <string name="admin_panel">Admin Panel</string>
+    <string name="admin_dashboard">Dashboard</string>
+    <string name="admin_users">Users</string>
+    <string name="admin_parcels">Parcels</string>
+    <string name="admin_payments">Payments</string>
+    <string name="admin_verify">Verify</string>
+    <string name="admin_reject">Reject</string>
+    <string name="admin_activate">Activate</string>
+    <string name="admin_deactivate">Deactivate</string>
+
+    <!-- General -->
+    <string name="loading">Loading…</string>
+    <string name="retry">Retry</string>
+    <string name="logout">Log Out</string>
+    <string name="back">Back</string>
+    <string name="view_route">View Route</string>
+</resources>

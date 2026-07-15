@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/admin_dashboard"
+        android:icon="@android:drawable/stat_sys_data_bluetooth"
+        android:title="Dashboard" />
+
+    <item
+        android:id="@+id/admin_users"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="Users" />
+
+    <item
+        android:id="@+id/admin_parcels"
+        android:icon="@android:drawable/ic_menu_send"
+        android:title="Parcels" />
+
+    <item
+        android:id="@+id/admin_payments"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Payments" />
+
+</menu>

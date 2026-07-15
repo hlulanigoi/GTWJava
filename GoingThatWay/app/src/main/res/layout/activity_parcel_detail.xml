@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        app:title="Parcel Details"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/ic_arrow_back" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="32dp"
+        android:indeterminateTint="@color/primary"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Status + title card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                app:cardCornerRadius="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <View android:layout_width="match_parent" android:layout_height="5dp"
+                        android:background="@color/primary" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:orientation="horizontal" android:layout_marginBottom="10dp">
+                            <TextView android:id="@+id/tv_description"
+                                android:layout_width="0dp" android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textSize="18sp" android:textStyle="bold"
+                                android:textColor="@color/text_primary" />
+                            <TextView android:id="@+id/tv_status"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:textSize="11sp" android:textStyle="bold"
+                                android:textColor="@color/white" android:padding="6dp" />
+                        </LinearLayout>
+
+                        <TextView android:id="@+id/tv_weight"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="13sp" android:textColor="@color/text_secondary"
+                            android:layout_marginBottom="14dp" />
+
+                        <View android:layout_width="match_parent" android:layout_height="1dp"
+                            android:background="@color/divider" android:layout_marginBottom="14dp" />
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="PICKUP" android:textSize="11sp" android:textColor="@color/primary"
+                            android:textStyle="bold" android:letterSpacing="0.08" android:layout_marginBottom="4dp" />
+                        <TextView android:id="@+id/tv_pickup_address"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="14sp" android:textColor="@color/text_primary"
+                            android:layout_marginBottom="12dp" />
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="DESTINATION" android:textSize="11sp" android:textColor="@color/primary"
+                            android:textStyle="bold" android:letterSpacing="0.08" android:layout_marginBottom="4dp" />
+                        <TextView android:id="@+id/tv_destination_address"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="14sp" android:textColor="@color/text_primary"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView android:id="@+id/tv_special_instructions"
+                            android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:textSize="13sp" android:textColor="@color/primary_dark"
+                            android:background="@color/primary_light" android:padding="12dp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Earnings card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/primary">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Total Fee" android:textSize="11sp" android:textColor="#A5D6A7" />
+                        <TextView android:id="@+id/tv_fee"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="20sp" android:textStyle="bold" android:textColor="@color/white" />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Carrier Earns (80%)" android:textSize="11sp" android:textColor="#A5D6A7" />
+                        <TextView android:id="@+id/tv_carrier_earns"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="20sp" android:textStyle="bold" android:textColor="@color/accent" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Sender card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="SENT BY" android:textSize="11sp" android:textColor="@color/primary"
+                            android:textStyle="bold" android:letterSpacing="0.08" />
+                        <TextView android:id="@+id/tv_sender_name"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="16sp" android:textStyle="bold"
+                            android:textColor="@color/text_primary" />
+                    </LinearLayout>
+
+                    <TextView android:id="@+id/tv_sender_rating"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:textSize="16sp" android:textColor="@color/accent" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- optional image placeholder -->
+            <ImageView
+                android:id="@+id/iv_parcel_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        app:title="Bank Payment"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/ic_arrow_back" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Amount card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/primary">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="28dp">
+
+                    <TextView
+                        android:id="@+id/tv_purpose"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Amount Due"
+                        android:textSize="14sp"
+                        android:textColor="#A5D6A7"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/tv_amount_due"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="R 0.00"
+                        android:textSize="44sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Bank details card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp">
+                        <View android:layout_width="4dp" android:layout_height="20dp"
+                            android:background="@color/primary" android:layout_marginEnd="10dp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Transfer to this account"
+                            android:textSize="15sp" android:textStyle="bold"
+                            android:textColor="@color/text_primary" android:layout_marginBottom="12dp" />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/divider" android:layout_marginVertical="12dp" />
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:layout_marginBottom="8dp">
+                        <TextView android:layout_width="120dp" android:layout_height="wrap_content"
+                            android:text="Bank" android:textColor="@color/text_secondary" android:textSize="14sp" />
+                        <TextView android:id="@+id/tv_bank_name" android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:textStyle="bold"
+                            android:textColor="@color/text_primary" android:textSize="14sp" android:text="FNB" />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:layout_marginBottom="8dp">
+                        <TextView android:layout_width="120dp" android:layout_height="wrap_content"
+                            android:text="Account Name" android:textColor="@color/text_secondary" android:textSize="14sp" />
+                        <TextView android:id="@+id/tv_account_name" android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:textStyle="bold"
+                            android:textColor="@color/text_primary" android:textSize="14sp" android:text="Going That Way (Pty) Ltd" />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:layout_marginBottom="8dp">
+                        <TextView android:layout_width="120dp" android:layout_height="wrap_content"
+                            android:text="Account No." android:textColor="@color/text_secondary" android:textSize="14sp" />
+                        <TextView android:id="@+id/tv_account_number" android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:textStyle="bold"
+                            android:textColor="@color/text_primary" android:textSize="14sp" android:text="62812345678" />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:layout_marginBottom="8dp">
+                        <TextView android:layout_width="120dp" android:layout_height="wrap_content"
+                            android:text="Branch Code" android:textColor="@color/text_secondary" android:textSize="14sp" />
+                        <TextView android:id="@+id/tv_branch_code" android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:textStyle="bold"
+                            android:textColor="@color/text_primary" android:textSize="14sp" android:text="250655" />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:background="@color/primary_light"
+                        android:padding="10dp">
+                        <TextView android:layout_width="120dp" android:layout_height="wrap_content"
+                            android:text="Reference" android:textColor="@color/text_secondary" android:textSize="14sp" />
+                        <TextView android:id="@+id/tv_reference"
+                            android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:textStyle="bold"
+                            android:textColor="@color/primary_dark" android:textSize="16sp"
+                            android:fontFamily="monospace" android:text="USE YOUR UNIQUE REF" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Once paid, paste your bank's payment confirmation reference below:"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="12dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Your Payment Reference"
+                style="@style/GtwInput"
+                android:layout_marginBottom="20dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_payment_reference"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text|textCapCharacters"
+                    android:fontFamily="monospace" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_confirm_payment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="I Have Paid — Confirm"
+                android:textSize="15sp"
+                style="@style/Btn.Primary" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
