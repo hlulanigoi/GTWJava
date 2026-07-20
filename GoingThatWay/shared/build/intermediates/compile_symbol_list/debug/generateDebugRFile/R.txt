@@ -41,6 +41,7 @@ int drawable bg_input_field 0x0
 int drawable bg_rounded_green 0x0
 int drawable bg_stat_chip 0x0
 int drawable ic_arrow_back 0x0
+int drawable ic_launcher 0x0
 int drawable ic_parcel_placeholder 0x0
 int id action_logout 0x0
 int id admin_bottom_nav 0x0
