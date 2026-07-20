@@ -67,6 +67,55 @@
                 android:textColor="@color/text_secondary"
                 android:layout_marginBottom="10dp" android:layout_marginTop="4dp" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_pin_pickup"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pin pickup" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_pin_destination"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pin destination" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_use_current_location"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Use current" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_geo_pickup"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Lookup pickup" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_geo_destination"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Lookup dest" />
+            </LinearLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:hint="Pickup Address"
@@ -86,6 +135,12 @@
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:inputType="textPostalAddress|textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/map_view"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginBottom="16dp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"

@@ -19,9 +19,16 @@ import com.goinghatway.app.R;
 import com.goinghatway.app.databinding.ActivityRequestRideBinding;
 import com.goinghatway.app.models.Ride;
 import com.goinghatway.app.utils.Constants;
+import com.goinghatway.app.utils.LocationPickerHelper;
+import com.goinghatway.app.utils.OsmMapUtils;
+import com.goinghatway.app.utils.PriceCalculator;
 import com.goinghatway.app.viewmodels.RideViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+
+import org.osmdroid.events.MapEventsReceiver;
+import org.osmdroid.views.overlay.MapEventsOverlay;
+import org.osmdroid.views.overlay.Marker;
 
 import java.util.Locale;
 
@@ -38,6 +45,9 @@ public class RequestRideActivity extends AppCompatActivity {
 
     private String pendingPaymentRef = null;
     private boolean isOnDemandMode = false;
+    private boolean pinningPickup = true;
+    private Marker pickupMarker;
+    private Marker destinationMarker;
 
     private final ActivityResultLauncher<String> locationPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
@@ -57,11 +67,15 @@ public class RequestRideActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(RideViewModel.class);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        OsmMapUtils.init(this);
+        setupMapView();
+
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setupLuggageSpinner();
         setupFareCalculator();
+        setupLocationButtons();
 
         binding.btnProceedToPayment.setOnClickListener(v -> {
             isOnDemandMode = false;
@@ -72,6 +86,48 @@ public class RequestRideActivity extends AppCompatActivity {
             isOnDemandMode = true;
             requestLocationForOnDemand();
         });
+    }
+
+    private void setupMapView() {
+        OsmMapUtils.configure(binding.mapView);
+        OsmMapUtils.centerOn(binding.mapView, OsmMapUtils.SA_LAT, OsmMapUtils.SA_LNG, 10.0);
+
+        pickupMarker = OsmMapUtils.addMarker(binding.mapView, OsmMapUtils.SA_LAT, OsmMapUtils.SA_LNG,
+                "Pickup", "Tap the map to set a pickup pin", false);
+        destinationMarker = OsmMapUtils.addMarker(binding.mapView, OsmMapUtils.SA_LAT, OsmMapUtils.SA_LNG,
+                "Destination", "Tap the map to set a destination pin", false);
+
+        MapEventsOverlay eventsOverlay = new MapEventsOverlay(new MapEventsReceiver() {
+            @Override
+            public boolean singleTapConfirmedHelper(org.osmdroid.util.GeoPoint p) {
+                setPinnedLocation(p.getLatitude(), p.getLongitude());
+                return true;
+            }
+
+            @Override
+            public boolean longPressHelper(org.osmdroid.util.GeoPoint p) {
+                return false;
+            }
+        });
+        binding.mapView.getOverlays().add(eventsOverlay);
+        binding.mapView.invalidate();
+    }
+
+    private void setPinnedLocation(double lat, double lng) {
+        if (pinningPickup) {
+            pickupLat = lat;
+            pickupLng = lng;
+            pickupMarker.setPosition(new org.osmdroid.util.GeoPoint(lat, lng));
+            binding.etPickupAddress.setText("Pinned pickup location");
+            Toast.makeText(this, "Pickup pin set", Toast.LENGTH_SHORT).show();
+        } else {
+            destLat = lat;
+            destLng = lng;
+            destinationMarker.setPosition(new org.osmdroid.util.GeoPoint(lat, lng));
+            binding.etDestinationAddress.setText("Pinned destination location");
+            Toast.makeText(this, "Destination pin set", Toast.LENGTH_SHORT).show();
+        }
+        binding.mapView.invalidate();
     }
 
     private void setupLuggageSpinner() {
@@ -86,6 +142,24 @@ public class RequestRideActivity extends AppCompatActivity {
         binding.etPassengerCount.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) updateFarePreview();
         });
+        binding.etPassengerCount.setOnEditorActionListener((v, actionId, event) -> {
+            updateFarePreview();
+            return false;
+        });
+    }
+
+    private void setupLocationButtons() {
+        binding.btnPinPickup.setOnClickListener(v -> {
+            pinningPickup = true;
+            Toast.makeText(this, "Tap the map to place the pickup pin", Toast.LENGTH_SHORT).show();
+        });
+        binding.btnPinDestination.setOnClickListener(v -> {
+            pinningPickup = false;
+            Toast.makeText(this, "Tap the map to place the destination pin", Toast.LENGTH_SHORT).show();
+        });
+        binding.btnUseCurrentLocation.setOnClickListener(v -> requestLocationForOnDemand());
+        binding.btnGeoPickup.setOnClickListener(v -> resolveAddress(binding.etPickupAddress.getText().toString().trim(), true));
+        binding.btnGeoDestination.setOnClickListener(v -> resolveAddress(binding.etDestinationAddress.getText().toString().trim(), false));
     }
 
     private void updateFarePreview() {
@@ -93,9 +167,9 @@ public class RequestRideActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(countStr)) return;
         try {
             int count = Integer.parseInt(countStr);
-            double fare = calculateFare(count);
-            double driverEarning = fare * Constants.CARRIER_SHARE_PERCENT;
-            double platform = fare * Constants.PLATFORM_FEE_PERCENT;
+            double fare = PriceCalculator.calculateRideFare(count);
+            double driverEarning = PriceCalculator.calculateDriverEarning(fare);
+            double platform = PriceCalculator.calculatePlatformFee(fare);
             binding.tvFareText.setText(String.format(Locale.getDefault(),
                     "Fare: R%.2f  |  Driver earns: R%.2f  |  Platform: R%.2f",
                     fare, driverEarning, platform));
@@ -103,16 +177,41 @@ public class RequestRideActivity extends AppCompatActivity {
         } catch (NumberFormatException ignored) {}
     }
 
-    private double calculateFare(int passengerCount) {
-        if (passengerCount <= 1) return 80.0;
-        if (passengerCount <= 3) return 150.0;
-        return 220.0;
+    private void resolveAddress(String query, boolean isPickup) {
+        if (TextUtils.isEmpty(query)) {
+            Toast.makeText(this, "Enter an address first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        setLoading(true);
+        LocationPickerHelper.autoFillFromAddress(this, query, new LocationPickerHelper.OnLocationResolved() {
+            @Override
+            public void onResolved(double lat, double lng, String formattedAddress) {
+                setLoading(false);
+                if (isPickup) {
+                    pickupLat = lat;
+                    pickupLng = lng;
+                    binding.etPickupAddress.setText(formattedAddress);
+                    Toast.makeText(RequestRideActivity.this, "Pickup location ready", Toast.LENGTH_SHORT).show();
+                } else {
+                    destLat = lat;
+                    destLng = lng;
+                    binding.etDestinationAddress.setText(formattedAddress);
+                    Toast.makeText(RequestRideActivity.this, "Destination location ready", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                setLoading(false);
+                Toast.makeText(RequestRideActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void proceedToScheduledPayment() {
         if (!validateScheduledForm()) return;
         int count = Integer.parseInt(binding.etPassengerCount.getText().toString().trim());
-        double fare = calculateFare(count);
+        double fare = PriceCalculator.calculateRideFare(count);
         Intent intent = new Intent(this, PaymentActivity.class);
         intent.putExtra(Constants.EXTRA_AMOUNT, fare);
         intent.putExtra(Constants.EXTRA_PURPOSE, "ride");
@@ -137,7 +236,7 @@ public class RequestRideActivity extends AppCompatActivity {
                 onDemandLng = location.getLongitude();
             }
             int count = Integer.parseInt(binding.etPassengerCount.getText().toString().trim());
-            double fare = calculateFare(count);
+            double fare = PriceCalculator.calculateRideFare(count);
             Intent intent = new Intent(this, PaymentActivity.class);
             intent.putExtra(Constants.EXTRA_AMOUNT, fare);
             intent.putExtra(Constants.EXTRA_PURPOSE, "ride");
@@ -169,7 +268,7 @@ public class RequestRideActivity extends AppCompatActivity {
         String luggageSize = sizes[sizeIdx];
         String pickupAddr = binding.etPickupAddress.getText().toString().trim();
         String destAddr = binding.etDestinationAddress.getText().toString().trim();
-        double fare = calculateFare(count);
+        double fare = PriceCalculator.calculateRideFare(count);
 
         setLoading(true);
         viewModel.createRide(notes, count, luggageSize,
