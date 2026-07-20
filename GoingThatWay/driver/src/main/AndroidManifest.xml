@@ -30,9 +30,9 @@
         <activity android:name="com.goinghatway.app.activities.LoginActivity" android:exported="false" />
         <activity android:name="com.goinghatway.app.activities.RegisterActivity" android:exported="false" />
         <activity android:name="com.goinghatway.app.activities.MainActivity" android:exported="false" />
-        <activity android:name="com.goinghatway.app.activities.PostTripActivity" android:exported="false" />
-        <activity android:name="com.goinghatway.app.activities.TripDetailActivity" android:exported="false" />
-        <activity android:name="com.goinghatway.app.activities.TripMapActivity" android:exported="false" />
+        <activity android:name="com.goinghatway.driver.ui.TripFormActivity" android:exported="false" />
+        <activity android:name="com.goinghatway.driver.ui.TripListActivity" android:exported="false" />
+        <activity android:name="com.goinghatway.driver.ui.ProfileActivity" android:exported="false" />
 
     </application>
 

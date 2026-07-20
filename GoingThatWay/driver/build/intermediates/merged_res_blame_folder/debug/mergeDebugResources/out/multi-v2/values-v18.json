@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.goinghatway.driver-mergeDebugResources-50:/values-v18/values-v18.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Irgadgets\\.gradle\\caches\\8.14.5\\transforms\\9f134a61656ca49220fac2a0a7d108b1\\transformed\\appcompat-1.6.1\\res\\values-v18\\values-v18.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "48",
+                        "endOffsets": "99"
+                    }
+                }
+            ]
+        }
+    ]
+}

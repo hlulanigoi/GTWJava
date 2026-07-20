@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.goinghatway.driver-debug-52:/layout_activity_trip_form.xml.flat",
+        "source": "com.goinghatway.driver-main-54:/layout/activity_trip_form.xml"
+    },
+    {
+        "merged": "com.goinghatway.driver-debug-52:/layout_activity_trip_list.xml.flat",
+        "source": "com.goinghatway.driver-main-54:/layout/activity_trip_list.xml"
+    },
+    {
+        "merged": "com.goinghatway.driver-debug-52:/layout_activity_main.xml.flat",
+        "source": "com.goinghatway.driver-main-54:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.goinghatway.driver-debug-52:/layout_activity_login.xml.flat",
+        "source": "com.goinghatway.driver-main-54:/layout/activity_login.xml"
+    }
+]

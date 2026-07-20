@@ -1,0 +1,22 @@
+<navigation
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:id="@+id/admin_nav_graph"
+app:startDestination="@id/admin_dashboard" >
+<fragment
+    android:id="@+id/admin_dashboard"
+    android:name="com.goinghatway.app.fragments.admin.AdminDashboardFragment"
+    android:label="Dashboard" />
+<fragment
+    android:id="@+id/admin_users"
+    android:name="com.goinghatway.app.fragments.admin.AdminUsersFragment"
+    android:label="Users" />
+<fragment
+    android:id="@+id/admin_parcels"
+    android:name="com.goinghatway.app.fragments.admin.AdminParcelsFragment"
+    android:label="Parcels" />
+<fragment
+    android:id="@+id/admin_payments"
+    android:name="com.goinghatway.app.fragments.admin.AdminPaymentsFragment"
+    android:label="Payments" />
+</navigation>
