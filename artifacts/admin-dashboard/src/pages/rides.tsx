@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { 
   useListAdminRides, 
   getListAdminRidesQueryKey,
-  useUpdateRideStatus
+  useUpdateAdminRideStatus
 } from '@workspace/api-client-react';
 import { 
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
@@ -44,7 +44,7 @@ export default function RidesPage() {
     }
   );
 
-  const updateStatusMutation = useUpdateRideStatus();
+  const updateStatusMutation = useUpdateAdminRideStatus();
 
   const handleStatusChange = (id: string, newStatus: string) => {
     updateStatusMutation.mutate(
@@ -129,18 +129,18 @@ export default function RidesPage() {
                     <div className="flex flex-col gap-1.5 max-w-[300px]">
                       <div className="flex items-start gap-2">
                         <MapPin className="w-3.5 h-3.5 mt-0.5 text-muted-foreground shrink-0" />
-                        <span className="text-sm leading-tight truncate" title={ride.originAddress || 'Unknown'}>{ride.originAddress || 'Unknown'}</span>
+                        <span className="text-sm leading-tight truncate" title={ride.pickupAddress || 'Unknown'}>{ride.pickupAddress || 'Unknown'}</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <Navigation className="w-3.5 h-3.5 mt-0.5 text-primary shrink-0" />
-                        <span className="text-sm font-medium leading-tight truncate" title={ride.destAddress || 'Unknown'}>{ride.destAddress || 'Unknown'}</span>
+                        <span className="text-sm font-medium leading-tight truncate" title={ride.destinationAddress || 'Unknown'}>{ride.destinationAddress || 'Unknown'}</span>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col text-xs font-mono text-muted-foreground space-y-1">
                       <span title="Ride ID">R: {ride.id.substring(0,8)}...</span>
-                      {ride.passengerId && <span title="Passenger ID">P: {ride.passengerId.substring(0,8)}...</span>}
+                      {ride.riderId && <span title="Rider ID">P: {ride.riderId.substring(0,8)}...</span>}
                       {ride.driverId && <span title="Driver ID" className="text-primary/80">D: {ride.driverId.substring(0,8)}...</span>}
                     </div>
                   </TableCell>

@@ -3,7 +3,7 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: Going That Way — Admin Dashboard API
+  description: Going That Way — API
 servers:
   - url: /api
     description: Base API path
@@ -12,6 +12,18 @@ tags:
     description: Health operations
   - name: auth
     description: Authentication
+  - name: parcels
+    description: Parcel operations
+  - name: rides
+    description: Ride operations
+  - name: matches
+    description: Match operations
+  - name: tickets
+    description: Ticket operations
+  - name: payments
+    description: Payment operations
+  - name: users
+    description: User operations
   - name: admin
     description: Admin operations
 
@@ -30,6 +42,27 @@ paths:
                 $ref: "#/components/schemas/HealthStatus"
 
   # ── Auth ──────────────────────────────────────────────────────────────────
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResult"
+        "409":
+          description: Email already exists
+
   /auth/login:
     post:
       operationId: login
@@ -76,6 +109,476 @@ paths:
       responses:
         "200":
           description: Logged out
+
+  # ── Parcels ────────────────────────────────────────────────────────────────
+  /parcels/my:
+    get:
+      operationId: getMyParcels
+      tags: [parcels]
+      summary: List my parcels
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: My parcels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Parcel"
+
+  /parcels:
+    get:
+      operationId: listParcels
+      tags: [parcels]
+      summary: List available parcels (for carriers)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: status
+          in: query
+          schema: { type: string }
+        - name: lat
+          in: query
+          schema: { type: number }
+        - name: lng
+          in: query
+          schema: { type: number }
+        - name: radius_km
+          in: query
+          schema: { type: number }
+      responses:
+        "200":
+          description: Paginated parcels
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParcelPage"
+
+    post:
+      operationId: createParcel
+      tags: [parcels]
+      summary: Create a new parcel
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ParcelInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Parcel"
+
+  /parcels/{id}:
+    get:
+      operationId: getParcel
+      tags: [parcels]
+      summary: Get parcel by ID
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Parcel
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Parcel"
+        "404":
+          description: Not found
+
+    delete:
+      operationId: deleteParcel
+      tags: [parcels]
+      summary: Cancel / delete a pending parcel
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Deleted
+
+  /parcels/{id}/status:
+    patch:
+      operationId: updateParcelStatus
+      tags: [parcels]
+      summary: Update parcel status
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ParcelStatusUpdate"
+      responses:
+        "200":
+          description: Updated parcel
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Parcel"
+
+  # ── Rides ──────────────────────────────────────────────────────────────────
+  /rides/my:
+    get:
+      operationId: getMyRides
+      tags: [rides]
+      summary: List my rides
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: My rides
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ride"
+
+  /rides:
+    get:
+      operationId: listRides
+      tags: [rides]
+      summary: List rides
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: status
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: Paginated rides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RidePage"
+
+    post:
+      operationId: createRide
+      tags: [rides]
+      summary: Create a new ride request
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RideInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ride"
+
+  /rides/{id}:
+    get:
+      operationId: getRide
+      tags: [rides]
+      summary: Get ride by ID
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Ride
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ride"
+        "404":
+          description: Not found
+
+    delete:
+      operationId: deleteRide
+      tags: [rides]
+      summary: Cancel / delete a pending ride
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Deleted
+
+  /rides/{id}/status:
+    patch:
+      operationId: updateRideStatus
+      tags: [rides]
+      summary: Update ride status
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RideStatusUpdate"
+      responses:
+        "200":
+          description: Updated ride
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ride"
+
+  /rides/on-demand:
+    post:
+      operationId: createOnDemandRide
+      tags: [rides]
+      summary: Create an on-demand ride using GPS coords for pickup
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OnDemandRideInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OnDemandRideResult"
+
+  # ── Matches ────────────────────────────────────────────────────────────────
+  /matches:
+    get:
+      operationId: getMyMatches
+      tags: [matches]
+      summary: List matches for the current user (as sender or carrier)
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+
+  /matches/{id}/accept:
+    post:
+      operationId: acceptMatch
+      tags: [matches]
+      summary: Accept a match
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Accepted match
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+
+  /matches/{id}/reject:
+    post:
+      operationId: rejectMatch
+      tags: [matches]
+      summary: Reject a match
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Rejected match
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+
+  # ── Tickets ────────────────────────────────────────────────────────────────
+  /tickets/my:
+    get:
+      operationId: getMyTickets
+      tags: [tickets]
+      summary: List my tickets
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: My tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket"
+
+  /tickets/price:
+    get:
+      operationId: getTicketPrice
+      tags: [tickets]
+      summary: Get the current ticket price
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Ticket price
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TicketPriceResult"
+
+  /tickets/purchase:
+    post:
+      operationId: purchaseTicket
+      tags: [tickets]
+      summary: Purchase a carrier ticket
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TicketPurchaseInput"
+      responses:
+        "201":
+          description: Purchased ticket
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket"
+
+  # ── Payments ───────────────────────────────────────────────────────────────
+  /payments/initiate:
+    post:
+      operationId: initiatePayment
+      tags: [payments]
+      summary: Initiate a bank transfer payment and get a reference number
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentInitiateInput"
+      responses:
+        "201":
+          description: Payment initiated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentInitiateResult"
+
+  /payments/verify:
+    post:
+      operationId: verifyPaymentStatus
+      tags: [payments]
+      summary: Check the status of a payment reference
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentVerifyInput"
+      responses:
+        "200":
+          description: Payment status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+
+  # ── Users ──────────────────────────────────────────────────────────────────
+  /users/{id}:
+    get:
+      operationId: getUser
+      tags: [users]
+      summary: Get a user by ID
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: User
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/profile:
+    patch:
+      operationId: updateProfile
+      tags: [users]
+      summary: Update my profile
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdate"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/me/apply-driver:
+    post:
+      operationId: applyAsDriver
+      tags: [users]
+      summary: Apply to become a driver/carrier
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DriverApplicationInput"
+      responses:
+        "200":
+          description: Application submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
 
   # ── Admin Stats ────────────────────────────────────────────────────────────
   /admin/stats:
@@ -259,9 +762,9 @@ paths:
 
   /admin/rides/{id}/status:
     patch:
-      operationId: updateRideStatus
+      operationId: updateAdminRideStatus
       tags: [admin]
-      summary: Update ride status
+      summary: Update ride status (admin)
       security: [{ bearerAuth: [] }]
       parameters:
         - name: id
@@ -441,6 +944,20 @@ components:
         status:
           type: string
 
+    # ── Auth ──────────────────────────────────────────────────────────────
+    RegisterInput:
+      type: object
+      required: [full_name, email, password]
+      properties:
+        full_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+
     LoginInput:
       type: object
       required: [email, password]
@@ -459,6 +976,7 @@ components:
         user:
           $ref: "#/components/schemas/User"
 
+    # ── Users ─────────────────────────────────────────────────────────────
     User:
       type: object
       required: [id, fullName, email, role, isActive, isApprovedDriver]
@@ -508,6 +1026,25 @@ components:
         pageSize:
           type: integer
 
+    ProfileUpdate:
+      type: object
+      properties:
+        full_name:
+          type: string
+        phone:
+          type: string
+
+    DriverApplicationInput:
+      type: object
+      required: [license_number, vehicle_plate, vehicle_model]
+      properties:
+        license_number:
+          type: string
+        vehicle_plate:
+          type: string
+        vehicle_model:
+          type: string
+
     RoleUpdate:
       type: object
       required: [role]
@@ -516,57 +1053,139 @@ components:
           type: string
           enum: [USER, ADMIN]
 
-    AdminStats:
+    # ── Parcels ───────────────────────────────────────────────────────────
+    Parcel:
       type: object
-      required: [totalUsers, activeUsers, totalRides, activeTrips, pendingPayments, totalRevenue, revenueThisWeek, revenueThisMonth]
+      required: [id, status]
       properties:
-        totalUsers:
+        id:
+          type: string
+        senderId:
+          type: string
+        carrierId:
+          type: ["string", "null"]
+        description:
+          type: string
+        weight:
+          type: string
+        size:
+          type: string
+          enum: [SMALL, MEDIUM, LARGE]
+        pickupAddress:
+          type: string
+        pickupLat:
+          type: string
+        pickupLng:
+          type: string
+        destinationAddress:
+          type: string
+        destinationLat:
+          type: string
+        destinationLng:
+          type: string
+        fee:
+          type: string
+        platformFee:
+          type: string
+        carrierEarning:
+          type: string
+        paymentReference:
+          type: string
+        specialInstructions:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [PENDING, MATCHED, COLLECTED, DELIVERED, CANCELLED]
+        createdAt:
+          type: string
+
+    ParcelPage:
+      type: object
+      required: [data, total, page, pageSize]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Parcel"
+        total:
           type: integer
-        activeUsers:
+        page:
           type: integer
-        totalRides:
-          type: integer
-        activeTrips:
-          type: integer
-        pendingPayments:
-          type: integer
-        totalRevenue:
-          type: number
-        revenueThisWeek:
-          type: number
-        revenueThisMonth:
-          type: number
-        pendingDriverApplications:
+        pageSize:
           type: integer
 
+    ParcelInput:
+      type: object
+      required: [description, weight, pickup_address, destination_address, payment_reference]
+      properties:
+        description:
+          type: string
+        weight:
+          type: number
+        size:
+          type: string
+          enum: [SMALL, MEDIUM, LARGE]
+          default: SMALL
+        pickup_address:
+          type: string
+        destination_address:
+          type: string
+        special_instructions:
+          type: string
+        payment_reference:
+          type: string
+
+    ParcelStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [PENDING, MATCHED, COLLECTED, DELIVERED, CANCELLED]
+
+    # ── Rides ─────────────────────────────────────────────────────────────
     Ride:
       type: object
       required: [id, status]
       properties:
         id:
           type: string
-        passengerId:
+        riderId:
           type: string
         driverId:
           type: ["string", "null"]
-        originLat:
-          type: number
-        originLng:
-          type: number
-        originAddress:
+        rideType:
           type: string
-        destLat:
-          type: number
-        destLng:
-          type: number
-        destAddress:
+          enum: [SCHEDULED, ON_DEMAND]
+        pickupAddress:
           type: string
-        status:
+        pickupLat:
           type: string
+        pickupLng:
+          type: string
+        destinationAddress:
+          type: string
+        destinationLat:
+          type: string
+        destinationLng:
+          type: string
+        passengerCount:
+          type: integer
+        luggageSize:
+          type: string
+        notes:
+          type: ["string", "null"]
         fare:
+          type: ["string", "null"]
+        driverEarning:
+          type: ["string", "null"]
+        platformFee:
           type: ["string", "null"]
         paymentReference:
           type: ["string", "null"]
+        status:
+          type: string
+          enum: [PENDING, MATCHED, EN_ROUTE, COMPLETED, CANCELLED]
         scheduledAt:
           type: ["string", "null"]
         createdAt:
@@ -587,6 +1206,61 @@ components:
         pageSize:
           type: integer
 
+    RideInput:
+      type: object
+      required: [pickup_address, destination_address, payment_reference]
+      properties:
+        ride_type:
+          type: string
+          enum: [SCHEDULED, ON_DEMAND]
+          default: ON_DEMAND
+        pickup_address:
+          type: string
+        destination_address:
+          type: string
+        passenger_count:
+          type: integer
+          default: 1
+        luggage_size:
+          type: string
+          enum: [NONE, SMALL, MEDIUM, LARGE]
+          default: NONE
+        notes:
+          type: string
+        payment_reference:
+          type: string
+
+    OnDemandRideInput:
+      type: object
+      required: [pickup_lat, pickup_lng, destination_address, payment_reference]
+      properties:
+        pickup_lat:
+          type: number
+        pickup_lng:
+          type: number
+        destination_address:
+          type: string
+        passenger_count:
+          type: integer
+          default: 1
+        luggage_size:
+          type: string
+          enum: [NONE, SMALL, MEDIUM, LARGE]
+          default: NONE
+        notes:
+          type: string
+        payment_reference:
+          type: string
+
+    OnDemandRideResult:
+      type: object
+      required: [ride]
+      properties:
+        ride:
+          $ref: "#/components/schemas/Ride"
+        booking:
+          $ref: "#/components/schemas/Booking"
+
     RideStatusUpdate:
       type: object
       required: [status]
@@ -594,6 +1268,74 @@ components:
         status:
           type: string
 
+    # ── Matches ───────────────────────────────────────────────────────────
+    Match:
+      type: object
+      required: [id, status]
+      properties:
+        id:
+          type: string
+        tripId:
+          type: string
+        parcelId:
+          type: string
+        carrierId:
+          type: string
+        senderId:
+          type: string
+        score:
+          type: string
+        alongRoute:
+          type: boolean
+        detourKm:
+          type: string
+        carrierEarning:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, ACCEPTED, REJECTED, COLLECTED, DELIVERED]
+        acceptedAt:
+          type: ["string", "null"]
+        collectedAt:
+          type: ["string", "null"]
+        deliveredAt:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        parcel:
+          $ref: "#/components/schemas/Parcel"
+        trip:
+          $ref: "#/components/schemas/Trip"
+
+    # ── Bookings ──────────────────────────────────────────────────────────
+    Booking:
+      type: object
+      required: [id, status]
+      properties:
+        id:
+          type: string
+        tripId:
+          type: string
+        rideId:
+          type: string
+        driverId:
+          type: string
+        riderId:
+          type: string
+        score:
+          type: string
+        alongRoute:
+          type: boolean
+        detourKm:
+          type: string
+        driverEarning:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+
+    # ── Trips ─────────────────────────────────────────────────────────────
     Trip:
       type: object
       required: [id, status]
@@ -632,6 +1374,7 @@ components:
         pageSize:
           type: integer
 
+    # ── Tickets ───────────────────────────────────────────────────────────
     Ticket:
       type: object
       required: [id, status]
@@ -648,6 +1391,7 @@ components:
           type: string
         status:
           type: string
+          enum: [ACTIVE, USED, EXPIRED]
         expiresAt:
           type: ["string", "null"]
         createdAt:
@@ -667,6 +1411,14 @@ components:
         price:
           type: number
 
+    TicketPurchaseInput:
+      type: object
+      required: [payment_reference]
+      properties:
+        payment_reference:
+          type: string
+
+    # ── Payments ──────────────────────────────────────────────────────────
     Payment:
       type: object
       required: [id, reference, amount, type, status]
@@ -690,11 +1442,59 @@ components:
         createdAt:
           type: string
 
+    PaymentInitiateInput:
+      type: object
+      required: [amount, purpose]
+      properties:
+        amount:
+          type: number
+        purpose:
+          type: string
+          enum: [RIDE, TICKET]
+
+    PaymentInitiateResult:
+      type: object
+      required: [reference]
+      properties:
+        reference:
+          type: string
+
+    PaymentVerifyInput:
+      type: object
+      required: [reference]
+      properties:
+        reference:
+          type: string
+
     PaymentRejection:
       type: object
       properties:
         reason:
           type: string
+
+    # ── Admin ─────────────────────────────────────────────────────────────
+    AdminStats:
+      type: object
+      required: [totalUsers, activeUsers, totalRides, activeTrips, pendingPayments, totalRevenue, revenueThisWeek, revenueThisMonth]
+      properties:
+        totalUsers:
+          type: integer
+        activeUsers:
+          type: integer
+        totalRides:
+          type: integer
+        activeTrips:
+          type: integer
+        pendingPayments:
+          type: integer
+        totalRevenue:
+          type: number
+        revenueThisWeek:
+          type: number
+        revenueThisMonth:
+          type: number
+        pendingDriverApplications:
+          type: integer
 
     RevenueReport:
       type: object

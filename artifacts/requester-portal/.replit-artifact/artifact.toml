@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/requester-portal/"
+title = "Going That Way — Requester Portal"
+version = "1.0.0"
+id = "artifacts/requester-portal"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/requester-portal/" ]
+localPort = 26023
+
+[services.development]
+run = "pnpm --filter @workspace/requester-portal run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/requester-portal", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/requester-portal/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "26023"
+BASE_PATH = "/requester-portal/"

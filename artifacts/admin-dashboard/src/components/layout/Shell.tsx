@@ -42,7 +42,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Spinner size="lg" />
+        <Spinner className="size-8" />
       </div>
     );
   }
