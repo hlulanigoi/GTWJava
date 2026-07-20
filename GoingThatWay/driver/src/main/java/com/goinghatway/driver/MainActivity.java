@@ -54,6 +54,12 @@ public class MainActivity extends AppCompatActivity {
         binding.btnTripRequests.setOnClickListener(v ->
                 startActivity(new Intent(this, TripRequestsActivity.class)));
 
+        binding.btnSupport.setOnClickListener(v -> {
+            requestNotificationPermissionIfNeeded();
+            Toast.makeText(this, "Notifications are ready for trip updates", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, SupportActivity.class));
+        });
+
         requestNotificationPermissionIfNeeded();
         initializeAuthState();
         binding.tvStatus.setOnClickListener(v -> toggleAvailability());
@@ -78,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
     private void toggleAvailability() {
         isOnline = !isOnline;
         updateAvailabilityUi();
+        if (isOnline) {
+            new NotificationScheduler().scheduleTripReminder(this);
+        }
         Toast.makeText(this, isOnline ? "You are now available" : "You are now offline", Toast.LENGTH_SHORT).show();
     }
 
