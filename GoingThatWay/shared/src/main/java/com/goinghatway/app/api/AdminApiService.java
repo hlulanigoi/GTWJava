@@ -3,6 +3,7 @@ package com.goinghatway.app.api;
 import com.goinghatway.app.api.responses.ApiResponse;
 import com.goinghatway.app.api.responses.PaginatedResponse;
 import com.goinghatway.app.models.AdminStats;
+import com.goinghatway.app.models.Parcel;
 import com.goinghatway.app.models.Ride;
 import com.goinghatway.app.models.Ticket;
 import com.goinghatway.app.models.Trip;
@@ -60,6 +61,19 @@ public interface AdminApiService {
 
     @PATCH("admin/rides/{id}/status")
     Call<ApiResponse<Ride>> updateRideStatus(
+            @Path("id") String id,
+            @Body Map<String, String> body
+    );
+
+    // ─── Parcels ─────────────────────────────────────────────────────────────
+    @GET("admin/parcels")
+    Call<ApiResponse<PaginatedResponse<Parcel>>> getParcels(
+            @Query("page") int page,
+            @Query("status") String status
+    );
+
+    @PATCH("admin/parcels/{id}/status")
+    Call<ApiResponse<Parcel>> updateParcelStatus(
             @Path("id") String id,
             @Body Map<String, String> body
     );

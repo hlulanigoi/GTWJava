@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'com.goinghatway.shared'
+    namespace 'com.goinghatway.app'
     compileSdk 34
 
     defaultConfig {

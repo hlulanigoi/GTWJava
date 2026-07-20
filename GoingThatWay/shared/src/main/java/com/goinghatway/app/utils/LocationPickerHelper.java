@@ -6,7 +6,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.text.TextUtils;
 
-import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.List;

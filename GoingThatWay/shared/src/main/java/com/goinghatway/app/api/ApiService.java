@@ -4,6 +4,8 @@ import com.goinghatway.app.api.responses.ApiResponse;
 import com.goinghatway.app.api.responses.AuthResponse;
 import com.goinghatway.app.api.responses.PaginatedResponse;
 import com.goinghatway.app.models.Booking;
+import com.goinghatway.app.models.Match;
+import com.goinghatway.app.models.Parcel;
 import com.goinghatway.app.models.Ride;
 import com.goinghatway.app.models.Ticket;
 import com.goinghatway.app.models.Trip;
@@ -72,6 +74,32 @@ public interface ApiService {
     @DELETE("rides/{id}")
     Call<ApiResponse<Void>> deleteRide(@Path("id") String id);
 
+    // ─── Parcels ─────────────────────────────────────────────────────────────
+
+    @GET("parcels")
+    Call<ApiResponse<PaginatedResponse<Parcel>>> getParcels(
+            @Query("page") int page,
+            @Query("status") String status,
+            @Query("lat") double lat,
+            @Query("lng") double lng,
+            @Query("radius_km") double radiusKm
+    );
+
+    @GET("parcels/my")
+    Call<ApiResponse<List<Parcel>>> getMyParcels();
+
+    @GET("parcels/{id}")
+    Call<ApiResponse<Parcel>> getParcel(@Path("id") String id);
+
+    @POST("parcels")
+    Call<ApiResponse<Parcel>> createParcel(@Body Map<String, Object> body);
+
+    @PATCH("parcels/{id}/status")
+    Call<ApiResponse<Parcel>> updateParcelStatus(
+            @Path("id") String id,
+            @Body Map<String, String> body
+    );
+
     // ─── Trips ────────────────────────────────────────────────────────────────
 
     @GET("trips")
@@ -117,6 +145,23 @@ public interface ApiService {
     @POST("bookings/{id}/complete")
     Call<ApiResponse<Booking>> markCompleted(@Path("id") String id);
 
+    // ─── Matches (Parcels) ──────────────────────────────────────────────────
+
+    @GET("matches/my")
+    Call<ApiResponse<List<Match>>> getMyMatches();
+
+    @POST("matches/{id}/accept")
+    Call<ApiResponse<Match>> acceptMatch(@Path("id") String id);
+
+    @POST("matches/{id}/reject")
+    Call<ApiResponse<Match>> rejectMatch(@Path("id") String id);
+
+    @POST("matches/{id}/collect")
+    Call<ApiResponse<Match>> markCollected(@Path("id") String id);
+
+    @POST("matches/{id}/deliver")
+    Call<ApiResponse<Match>> markDelivered(@Path("id") String id);
+
     // ─── Tickets ──────────────────────────────────────────────────────────────
 
     @GET("tickets/my")
@@ -133,6 +178,9 @@ public interface ApiService {
     /** Initiate a bank payment for a new ride; returns payment reference */
     @POST("payments/initiate")
     Call<ApiResponse<Map<String, String>>> initiateRidePayment(@Body Map<String, Object> body);
+
+    @POST("payments/initiate-parcel")
+    Call<ApiResponse<Map<String, String>>> initiateParcelPayment(@Body Map<String, Object> body);
 
     /** Verify payment after bank transfer */
     @POST("payments/verify")

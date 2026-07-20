@@ -23,12 +23,12 @@
         android:padding="12dp">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_find_parcels"
+            android:id="@+id/btn_find_rides"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="6dp"
-            android:text="Find Matching Parcels"
+            android:text="Find Matching Requests"
             android:textSize="14sp"
             style="@style/Btn.Primary" />
 

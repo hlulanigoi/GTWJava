@@ -17,6 +17,13 @@ public final class PriceCalculator {
         return 220.0;
     }
 
+    public static double calculateRideFare(int passengerCount, String rideType) {
+        double base = calculateRideFare(passengerCount);
+        if ("Premium".equalsIgnoreCase(rideType)) return base * 1.5;
+        if ("Shared".equalsIgnoreCase(rideType)) return base * 0.8;
+        return base;
+    }
+
     public static double calculateDriverEarning(double amount) {
         return amount * Constants.CARRIER_SHARE_PERCENT;
     }

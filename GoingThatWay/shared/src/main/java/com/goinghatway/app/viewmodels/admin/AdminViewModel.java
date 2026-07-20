@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.goinghatway.app.api.responses.ApiResponse;
 import com.goinghatway.app.api.responses.PaginatedResponse;
 import com.goinghatway.app.models.AdminStats;
+import com.goinghatway.app.models.Parcel;
 import com.goinghatway.app.models.Ride;
 import com.goinghatway.app.models.User;
 import com.goinghatway.app.repositories.admin.AdminRepository;
@@ -72,6 +73,18 @@ public class AdminViewModel extends ViewModel {
 
     public LiveData<ApiResponse<Ride>> updateRideStatus(String id, String status) {
         return repo.updateRideStatus(id, status);
+    }
+
+    // ─── Parcels ─────────────────────────────────────────────────────────────
+    public LiveData<ApiResponse<PaginatedResponse<Parcel>>> loadParcels(int page, String status) {
+        isLoading.setValue(true);
+        LiveData<ApiResponse<PaginatedResponse<Parcel>>> ld = repo.getParcels(page, status);
+        ld.observeForever(r -> isLoading.postValue(false));
+        return ld;
+    }
+
+    public LiveData<ApiResponse<Parcel>> updateParcelStatus(String id, String status) {
+        return repo.updateParcelStatus(id, status);
     }
 
     // ─── Payments ─────────────────────────────────────────────────────────────

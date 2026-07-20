@@ -49,6 +49,9 @@ public class Trip {
     @SerializedName("seats_available")
     private int seatsAvailable;
 
+    @SerializedName("available_capacity_kg")
+    private double availableCapacityKg;
+
     @SerializedName("waypoints")
     private List<RoutePoint> waypoints;
 
@@ -57,6 +60,9 @@ public class Trip {
 
     @SerializedName("matched_ride_count")
     private int matchedRideCount;
+
+    @SerializedName("matched_parcel_count")
+    private int matchedParcelCount;
 
     @SerializedName("status")
     private String status;
@@ -108,6 +114,9 @@ public class Trip {
     public int getSeatsAvailable() { return seatsAvailable; }
     public void setSeatsAvailable(int seatsAvailable) { this.seatsAvailable = seatsAvailable; }
 
+    public double getAvailableCapacityKg() { return availableCapacityKg; }
+    public void setAvailableCapacityKg(double availableCapacityKg) { this.availableCapacityKg = availableCapacityKg; }
+
     public List<RoutePoint> getWaypoints() { return waypoints; }
     public void setWaypoints(List<RoutePoint> waypoints) { this.waypoints = waypoints; }
 
@@ -116,6 +125,9 @@ public class Trip {
 
     public int getMatchedRideCount() { return matchedRideCount; }
     public void setMatchedRideCount(int matchedRideCount) { this.matchedRideCount = matchedRideCount; }
+
+    public int getMatchedParcelCount() { return matchedParcelCount; }
+    public void setMatchedParcelCount(int matchedParcelCount) { this.matchedParcelCount = matchedParcelCount; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

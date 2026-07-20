@@ -15,6 +15,13 @@
         app:titleTextColor="@color/white"
         app:navigationIcon="@drawable/ic_arrow_back" />
 
+    <org.osmdroid.views.MapView
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:clickable="true"
+        android:focusable="true" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -24,6 +31,43 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp">
+
+            <!-- Section: Location Helpers -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_pin_pickup"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pin Pickup"
+                    android:textSize="11sp"
+                    android:layout_marginEnd="4dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_pin_destination"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pin Dest"
+                    android:textSize="11sp"
+                    android:layout_marginEnd="4dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_use_current_location"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Current"
+                    android:textSize="11sp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            </LinearLayout>
 
             <!-- Section: What -->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -71,76 +115,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_pin_pickup"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Pin pickup" />
+                    android:hint="Pickup Address"
+                    style="@style/GtwInput">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_pickup_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPostalAddress|textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_pin_destination"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
+                    android:id="@+id/btn_geo_pickup"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Pin destination" />
+                    android:text="Go"
+                    style="@style/Widget.MaterialComponents.Button.TextButton" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_marginBottom="12dp">
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_use_current_location"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Use current" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_geo_pickup"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Lookup pickup" />
+                    android:hint="Destination Address"
+                    style="@style/GtwInput">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_destination_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPostalAddress|textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_geo_destination"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Lookup dest" />
+                    android:text="Go"
+                    style="@style/Widget.MaterialComponents.Button.TextButton" />
             </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Pickup Address"
-                style="@style/GtwInput" android:layout_marginBottom="12dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_pickup_address"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="textPostalAddress|textCapWords" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Destination Address"
-                style="@style/GtwInput" android:layout_marginBottom="12dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_destination_address"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="textPostalAddress|textCapWords" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <org.osmdroid.views.MapView
-                android:id="@+id/map_view"
-                android:layout_width="match_parent"
-                android:layout_height="220dp"
-                android:layout_marginBottom="16dp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"

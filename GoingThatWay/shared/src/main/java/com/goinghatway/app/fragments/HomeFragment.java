@@ -63,6 +63,10 @@ public class HomeFragment extends Fragment {
         SessionManager session = new SessionManager(requireContext());
         binding.tvWelcome.setText("Hi, " + session.getUserName() + "!");
 
+        if ("DRIVER".equalsIgnoreCase(session.getUserRole())) {
+            binding.btnRequestRideNow.setVisibility(View.GONE);
+        }
+
         setupMap();
         setupRecycler();
         requestLocationThenLoad();

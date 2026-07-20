@@ -8,6 +8,7 @@ import com.goinghatway.app.api.AdminApiService;
 import com.goinghatway.app.api.responses.ApiResponse;
 import com.goinghatway.app.api.responses.PaginatedResponse;
 import com.goinghatway.app.models.AdminStats;
+import com.goinghatway.app.models.Parcel;
 import com.goinghatway.app.models.Ride;
 import com.goinghatway.app.models.Ticket;
 import com.goinghatway.app.models.Trip;
@@ -142,6 +143,36 @@ public class AdminRepository {
                 result.setValue(r.isSuccessful() && r.body() != null ? r.body() : error("Failed"));
             }
             @Override public void onFailure(Call<ApiResponse<Ride>> c, Throwable t) {
+                result.setValue(error(t.getMessage()));
+            }
+        });
+        return result;
+    }
+
+    // ─── Parcels ─────────────────────────────────────────────────────────────
+    public LiveData<ApiResponse<PaginatedResponse<Parcel>>> getParcels(int page, String status) {
+        MutableLiveData<ApiResponse<PaginatedResponse<Parcel>>> result = new MutableLiveData<>();
+        api.getParcels(page, status).enqueue(new Callback<ApiResponse<PaginatedResponse<Parcel>>>() {
+            @Override public void onResponse(Call<ApiResponse<PaginatedResponse<Parcel>>> c,
+                                              Response<ApiResponse<PaginatedResponse<Parcel>>> r) {
+                result.setValue(r.isSuccessful() && r.body() != null ? r.body() : error("Failed to load parcels"));
+            }
+            @Override public void onFailure(Call<ApiResponse<PaginatedResponse<Parcel>>> c, Throwable t) {
+                result.setValue(error(t.getMessage()));
+            }
+        });
+        return result;
+    }
+
+    public LiveData<ApiResponse<Parcel>> updateParcelStatus(String id, String status) {
+        MutableLiveData<ApiResponse<Parcel>> result = new MutableLiveData<>();
+        Map<String, String> body = new HashMap<>();
+        body.put("status", status);
+        api.updateParcelStatus(id, body).enqueue(new Callback<ApiResponse<Parcel>>() {
+            @Override public void onResponse(Call<ApiResponse<Parcel>> c, Response<ApiResponse<Parcel>> r) {
+                result.setValue(r.isSuccessful() && r.body() != null ? r.body() : error("Failed"));
+            }
+            @Override public void onFailure(Call<ApiResponse<Parcel>> c, Throwable t) {
                 result.setValue(error(t.getMessage()));
             }
         });

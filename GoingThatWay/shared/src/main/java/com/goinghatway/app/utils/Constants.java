@@ -21,6 +21,7 @@ public class Constants {
     public static final String EXTRA_AMOUNT     = "extra_amount";
     public static final String EXTRA_PURPOSE    = "extra_purpose";
     public static final String EXTRA_USER_ID    = "extra_user_id";
+    public static final String EXTRA_PARCEL_ID  = "extra_parcel_id";
 
     // Platform fee
     public static final double PLATFORM_FEE_PERCENT  = 0.20;
@@ -54,4 +55,5 @@ public class Constants {
     public static final int RC_POST_TRIP           = 2002;
     public static final int RC_BUY_TICKET          = 2003;
     public static final int RC_PAYMENT             = 2004;
+    public static final int RC_CREATE_PARCEL       = 2005;
 }
