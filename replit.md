@@ -1,10 +1,11 @@
-# [Project name]
+# Going That Way
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A crowd-sourced parcel delivery platform: senders post parcels, travelers post trips, and the server matches them via a Haversine route-corridor algorithm. Includes admin role, ticket system, and bank-transfer payment flow.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- **API Server workflow** — start/restart the "API Server" workflow in Replit (runs `PORT=8080 pnpm --filter @workspace/api-server run dev`)
+- `pnpm --filter @workspace/api-server run dev` — run the API server manually (set `PORT=8080`)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
