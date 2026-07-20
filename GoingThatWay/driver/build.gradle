@@ -34,6 +34,10 @@ android {
 
 dependencies {
     implementation project(':shared')
+    implementation platform('com.google.firebase:firebase-bom:33.2.0')
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'androidx.core:core:1.13.2'
     
     // Annotation processors need to be repeated in the app module if they are not in the library
     annotationProcessor 'androidx.room:room-compiler:2.6.0'

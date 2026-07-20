@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph_requester"
+    app:startDestination="@id/nav_home">
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.goinghatway.app.fragments.HomeFragment"
+        android:label="Home" />
+    <fragment
+        android:id="@+id/nav_rides"
+        android:name="com.goinghatway.app.fragments.RidesFragment"
+        android:label="My Rides" />
+    <fragment
+        android:id="@+id/nav_tickets"
+        android:name="com.goinghatway.app.fragments.TicketsFragment"
+        android:label="Tickets" />
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.goinghatway.app.fragments.ProfileFragment"
+        android:label="Profile" />
+</navigation>

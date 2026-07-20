@@ -12,15 +12,14 @@
     <application
         android:name="com.goinghatway.app.GoingThatWayApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher"
         android:label="GoingThatWay Requester"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.GoingThatWay"
         android:usesCleartextTraffic="true">
 
-        <activity android:name="com.goinghatway.app.activities.SplashActivity" android:exported="true"
-            android:theme="@style/Theme.GoingThatWay.Splash">
+        <activity android:name=".RequesterMainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -29,7 +28,6 @@
 
         <activity android:name="com.goinghatway.app.activities.LoginActivity" android:exported="false" />
         <activity android:name="com.goinghatway.app.activities.RegisterActivity" android:exported="false" />
-        <activity android:name="com.goinghatway.app.activities.MainActivity" android:exported="false" />
         <activity android:name="com.goinghatway.app.activities.CreateParcelActivity" android:exported="false" />
         <activity android:name="com.goinghatway.app.activities.BuyTicketActivity" android:exported="false" />
         <activity android:name="com.goinghatway.app.activities.RequestRideActivity" android:exported="false" />

@@ -33,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
+            FirebaseAuthHelper authHelper = new FirebaseAuthHelper();
+            authHelper.signIn(this, email, password);
             sessionManager.saveSession("Driver User", email);
             openMain();
         });
