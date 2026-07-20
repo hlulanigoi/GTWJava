@@ -5,7 +5,7 @@ import { db, paymentsTable, ticketsTable } from "@workspace/db";
 import { requireAuth } from "../middlewares/auth";
 import { fail, ok } from "../lib/response";
 import { toTicketJson } from "../lib/serialize";
-import { Constants } from "../lib/constants";
+import { runtimeConfig } from "../lib/config";
 import { randomUUID } from "node:crypto";
 
 const router: IRouter = Router();
@@ -19,7 +19,7 @@ router.get("/tickets/my", requireAuth, async (req, res) => {
 });
 
 router.get("/tickets/price", requireAuth, async (_req, res) => {
-  ok(res, { price: Constants.DEFAULT_TICKET_PRICE });
+  ok(res, { price: runtimeConfig.ticketPrice });
 });
 
 router.post("/tickets/purchase", requireAuth, async (req, res) => {

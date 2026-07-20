@@ -1,4 +1,4 @@
-import type { User, Ride, Trip, Ticket, Booking, Payment } from "@workspace/db";
+import type { User, Ride, Trip, Ticket, Booking, Payment, Parcel, Match } from "@workspace/db";
 
 /** Convert Drizzle rows (camelCase, numeric-as-string) to the JSON shape the Android Gson models expect. */
 
@@ -134,5 +134,55 @@ export function toPaymentJson(p: Payment) {
     rejection_reason: p.rejectionReason,
     created_at: p.createdAt,
     verified_at: p.verifiedAt,
+  };
+}
+
+export function toParcelJson(p: Parcel) {
+  return {
+    id: p.id,
+    sender_id: p.senderId,
+    carrier_id: p.carrierId,
+    description: p.description,
+    weight: Number(p.weight),
+    size: p.size,
+    pickup_address: p.pickupAddress,
+    pickup_lat: Number(p.pickupLat),
+    pickup_lng: Number(p.pickupLng),
+    destination_address: p.destinationAddress,
+    destination_lat: Number(p.destinationLat),
+    destination_lng: Number(p.destinationLng),
+    status: p.status,
+    fee: Number(p.fee),
+    platform_fee: Number(p.platformFee),
+    carrier_earning: Number(p.carrierEarning),
+    payment_reference: p.paymentReference,
+    payment_verified: p.paymentVerified === "true",
+    special_instructions: p.specialInstructions,
+    created_at: p.createdAt,
+    updated_at: p.updatedAt,
+  };
+}
+
+export function toMatchJson(
+  m: Match,
+  opts: { parcel?: Parcel | null; trip?: Trip | null } = {},
+) {
+  return {
+    id: m.id,
+    trip_id: m.tripId,
+    trip: opts.trip ? toTripJson(opts.trip) : null,
+    parcel_id: m.parcelId,
+    parcel: opts.parcel ? toParcelJson(opts.parcel) : null,
+    carrier_id: m.carrierId,
+    sender_id: m.senderId,
+    score: Number(m.score),
+    along_route: m.alongRoute,
+    detour_km: m.detourKm ? Number(m.detourKm) : 0,
+    carrier_earning: m.carrierEarning ? Number(m.carrierEarning) : null,
+    status: m.status,
+    accepted_at: m.acceptedAt,
+    collected_at: m.collectedAt,
+    delivered_at: m.deliveredAt,
+    created_at: m.createdAt,
   };
 }
