@@ -1,10 +1,13 @@
 package com.goinghatway.app.activities;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -22,6 +25,7 @@ import com.goinghatway.app.utils.Constants;
 import com.goinghatway.app.utils.LocationPickerHelper;
 import com.goinghatway.app.utils.OsmMapUtils;
 import com.goinghatway.app.utils.PriceCalculator;
+import com.goinghatway.app.utils.RideLifecycleStateMachine;
 import com.goinghatway.app.viewmodels.RideViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -146,6 +150,20 @@ public class RequestRideActivity extends AppCompatActivity {
             updateFarePreview();
             return false;
         });
+
+        binding.rgRideType.setOnCheckedChangeListener((group, checkedId) -> updateFarePreview());
+
+        TextWatcher summaryWatcher = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateFarePreview();
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        };
+
+        binding.etPassengerCount.addTextChangedListener(summaryWatcher);
+        binding.etPickupAddress.addTextChangedListener(summaryWatcher);
+        binding.etDestinationAddress.addTextChangedListener(summaryWatcher);
     }
 
     private void setupLocationButtons() {
@@ -164,17 +182,48 @@ public class RequestRideActivity extends AppCompatActivity {
 
     private void updateFarePreview() {
         String countStr = binding.etPassengerCount.getText().toString().trim();
-        if (TextUtils.isEmpty(countStr)) return;
+        String pickupText = binding.etPickupAddress.getText().toString().trim();
+        String destinationText = binding.etDestinationAddress.getText().toString().trim();
+        String rideType = getSelectedRideType();
+
+        if (TextUtils.isEmpty(countStr)) {
+            binding.tvFareText.setText("Add the passenger count to preview the fare and booking summary.");
+            binding.tvBookingSummary.setText("Choose a ride type and destination to see your booking summary.");
+            binding.tvFareBreakdown.setVisibility(View.VISIBLE);
+            binding.tvBookingSummary.setVisibility(View.VISIBLE);
+            return;
+        }
+
         try {
             int count = Integer.parseInt(countStr);
-            double fare = PriceCalculator.calculateRideFare(count);
+            if (count < 1) {
+                binding.tvFareText.setText("Passenger count must be at least 1.");
+                binding.tvBookingSummary.setText("Passenger count must be at least 1.");
+                binding.tvFareBreakdown.setVisibility(View.VISIBLE);
+                binding.tvBookingSummary.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            double fare = PriceCalculator.calculateRideFare(count, rideType);
             double driverEarning = PriceCalculator.calculateDriverEarning(fare);
             double platform = PriceCalculator.calculatePlatformFee(fare);
+            String pickupLabel = TextUtils.isEmpty(pickupText) ? "Pickup" : pickupText;
+            String destinationLabel = TextUtils.isEmpty(destinationText) ? "Destination" : destinationText;
+
             binding.tvFareText.setText(String.format(Locale.getDefault(),
                     "Fare: R%.2f  |  Driver earns: R%.2f  |  Platform: R%.2f",
                     fare, driverEarning, platform));
+            binding.tvBookingSummary.setText(String.format(Locale.getDefault(),
+                    "%s ride • %d passenger(s) • Est. R%.2f\n%s → %s",
+                    rideType, count, fare, pickupLabel, destinationLabel));
             binding.tvFareBreakdown.setVisibility(View.VISIBLE);
-        } catch (NumberFormatException ignored) {}
+            binding.tvBookingSummary.setVisibility(View.VISIBLE);
+        } catch (NumberFormatException ignored) {
+            binding.tvFareText.setText("Passenger count should be a number.");
+            binding.tvBookingSummary.setText("Passenger count should be a number.");
+            binding.tvFareBreakdown.setVisibility(View.VISIBLE);
+            binding.tvBookingSummary.setVisibility(View.VISIBLE);
+        }
     }
 
     private void resolveAddress(String query, boolean isPickup) {
@@ -211,7 +260,7 @@ public class RequestRideActivity extends AppCompatActivity {
     private void proceedToScheduledPayment() {
         if (!validateScheduledForm()) return;
         int count = Integer.parseInt(binding.etPassengerCount.getText().toString().trim());
-        double fare = PriceCalculator.calculateRideFare(count);
+        double fare = PriceCalculator.calculateRideFare(count, getSelectedRideType());
         Intent intent = new Intent(this, PaymentActivity.class);
         intent.putExtra(Constants.EXTRA_AMOUNT, fare);
         intent.putExtra(Constants.EXTRA_PURPOSE, "ride");
@@ -236,7 +285,7 @@ public class RequestRideActivity extends AppCompatActivity {
                 onDemandLng = location.getLongitude();
             }
             int count = Integer.parseInt(binding.etPassengerCount.getText().toString().trim());
-            double fare = PriceCalculator.calculateRideFare(count);
+            double fare = PriceCalculator.calculateRideFare(count, getSelectedRideType());
             Intent intent = new Intent(this, PaymentActivity.class);
             intent.putExtra(Constants.EXTRA_AMOUNT, fare);
             intent.putExtra(Constants.EXTRA_PURPOSE, "ride");
@@ -278,6 +327,17 @@ public class RequestRideActivity extends AppCompatActivity {
                 .observe(this, response -> {
                     setLoading(false);
                     if (response != null && response.isSuccess()) {
+                        Intent next = new Intent();
+                        next.setComponent(new ComponentName("com.goinghatway.requester",
+                                "com.goinghatway.requester.RequesterActiveRideActivity"));
+                        next.putExtra("ride_status", RideLifecycleStateMachine.STATUS_SEARCHING);
+                        next.putExtra("ride_type", getSelectedRideType());
+                        next.putExtra("pickup_address", binding.etPickupAddress.getText().toString().trim());
+                        next.putExtra("destination_address", binding.etDestinationAddress.getText().toString().trim());
+                        next.putExtra("fare", PriceCalculator.calculateRideFare(Integer.parseInt(binding.etPassengerCount.getText().toString().trim()), getSelectedRideType()));
+                        next.putExtra("passenger_count", Integer.parseInt(binding.etPassengerCount.getText().toString().trim()));
+                        next.putExtra("payment_reference", pendingPaymentRef);
+                        startActivity(next);
                         Toast.makeText(this, "Ride booked! We are finding you a driver.",
                                 Toast.LENGTH_LONG).show();
                         setResult(RESULT_OK);
@@ -303,6 +363,17 @@ public class RequestRideActivity extends AppCompatActivity {
                 .observe(this, response -> {
                     setLoading(false);
                     if (response != null && response.isSuccess()) {
+                        Intent next = new Intent();
+                        next.setComponent(new ComponentName("com.goinghatway.requester",
+                                "com.goinghatway.requester.RequesterActiveRideActivity"));
+                        next.putExtra("ride_status", RideLifecycleStateMachine.STATUS_SEARCHING);
+                        next.putExtra("ride_type", getSelectedRideType());
+                        next.putExtra("pickup_address", binding.etPickupAddress.getText().toString().trim());
+                        next.putExtra("destination_address", binding.etDestinationAddress.getText().toString().trim());
+                        next.putExtra("fare", PriceCalculator.calculateRideFare(Integer.parseInt(binding.etPassengerCount.getText().toString().trim()), getSelectedRideType()));
+                        next.putExtra("passenger_count", Integer.parseInt(binding.etPassengerCount.getText().toString().trim()));
+                        next.putExtra("payment_reference", pendingPaymentRef);
+                        startActivity(next);
                         Toast.makeText(this, "On-demand ride requested! Looking for nearby drivers.",
                                 Toast.LENGTH_LONG).show();
                         setResult(RESULT_OK);
@@ -316,27 +387,52 @@ public class RequestRideActivity extends AppCompatActivity {
 
     private boolean validateScheduledForm() {
         boolean valid = true;
-        if (TextUtils.isEmpty(binding.etPassengerCount.getText())) {
+        String passengerCount = binding.etPassengerCount.getText().toString().trim();
+        if (TextUtils.isEmpty(passengerCount)) {
             binding.etPassengerCount.setError("Required"); valid = false;
+        } else {
+            int count = Integer.parseInt(passengerCount);
+            if (count < 1) {
+                binding.etPassengerCount.setError("Enter at least 1 passenger"); valid = false;
+            }
         }
+
         if (TextUtils.isEmpty(binding.etPickupAddress.getText())) {
             binding.etPickupAddress.setError("Required"); valid = false;
         }
         if (TextUtils.isEmpty(binding.etDestinationAddress.getText())) {
             binding.etDestinationAddress.setError("Required"); valid = false;
+        } else if (!TextUtils.isEmpty(binding.etPickupAddress.getText())
+                && binding.etPickupAddress.getText().toString().trim().equalsIgnoreCase(
+                binding.etDestinationAddress.getText().toString().trim())) {
+            binding.etDestinationAddress.setError("Destination should be different from pickup"); valid = false;
         }
         return valid;
     }
 
     private boolean validateOnDemandForm() {
         boolean valid = true;
-        if (TextUtils.isEmpty(binding.etPassengerCount.getText())) {
+        String passengerCount = binding.etPassengerCount.getText().toString().trim();
+        if (TextUtils.isEmpty(passengerCount)) {
             binding.etPassengerCount.setError("Required"); valid = false;
+        } else {
+            int count = Integer.parseInt(passengerCount);
+            if (count < 1) {
+                binding.etPassengerCount.setError("Enter at least 1 passenger"); valid = false;
+            }
         }
+
         if (TextUtils.isEmpty(binding.etDestinationAddress.getText())) {
             binding.etDestinationAddress.setError("Required"); valid = false;
         }
         return valid;
+    }
+
+    private String getSelectedRideType() {
+        int checkedId = binding.rgRideType.getCheckedRadioButtonId();
+        if (checkedId == R.id.rb_premium) return "Premium";
+        if (checkedId == R.id.rb_shared) return "Shared";
+        return "Standard";
     }
 
     private void setLoading(boolean loading) {
