@@ -1,131 +1,138 @@
 # Going That Way — Driver App Design Brief
 
-## Research Summary
-
-### What competitors do well
-
-| App | Key UX win |
-|-----|-----------|
-| **Uber Driver** | Map-dominant dashboard; online/offline toggle fills the hero; earnings shown prominently at the top |
-| **Lalamove Driver** | Bold orange request cards; fare is the largest number on screen; countdown ring on every request |
-| **PickMe Driver** | Redesigned for one-handed use in direct sunlight — 15 % accidental-rejection rate → near zero after redesign |
-| **DoorDash** | "Dash Now" CTA is enormous; status chip changes colour with every state transition |
-
-### The universal rules for production driver apps
-
-1. **Glance-safety first.** Drivers read the screen for 1–2 seconds while parked in traffic. Every critical number (fare, distance, payout) must be readable at windshield distance — think 36 sp+ for key figures.
-2. **One decision per screen.** The trip-request card must have exactly two actions: Accept (dominant) and Decline (present but secondary). No other tappable elements during the countdown.
-3. **Online/offline is a right, not a UX afterthought.** The toggle must be impossible to miss and must not use guilt-tripping copy.
-4. **Earnings transparency builds trust.** Show the per-trip breakdown; drivers who see the math stay engaged longer.
-5. **State machine clarity.** Every trip state (MATCHED → COLLECTED → DELIVERED) needs a distinct colour, icon, and one obvious next action.
+> Living document. Update this when major design decisions are made.
 
 ---
 
-## Proposed Theme: "Highveld Night"
+## Visual Theme: Highveld Night
 
-A dark-surface, high-contrast theme built for South African conditions — harsh sunlight, one-handed use, township connectivity.
+| Token              | Value       | Rationale                                     |
+|--------------------|-------------|-----------------------------------------------|
+| Background         | `#121212`   | True dark — reduces eye strain on night runs  |
+| Surface            | `#1E1E1E`   | Card/panel separation from background         |
+| Surface elevated   | `#2A2A2A`   | Chips, inner panels                           |
+| Primary (CTA)      | `#00C853`   | Electric green — action, trust, go            |
+| Accent (earnings)  | `#FFB300`   | Amber — money, urgency, countdown             |
+| Text primary       | `#F5F5F5`   | Near-white, comfortable at any brightness     |
+| Text secondary     | `#9E9E9E`   | Labels, hints, helper text                    |
+| Divider            | `#2E2E2E`   | Subtle separation                             |
 
-### Colour Palette
+Applied via driver module resource overrides (`driver/res/values/colors.xml`, `driver/res/values/themes.xml`).  
+Does **not** touch the shared or requester module — they keep the light green palette.
+
+---
+
+## Screen Inventory
+
+| Screen                    | File                                    | Status     |
+|---------------------------|-----------------------------------------|------------|
+| Driver dashboard          | `fragment_driver_dashboard.xml`         | ✅ Rebuilt  |
+| Trip request offer card   | `activity_trip_requests.xml`            | ✅ Rebuilt  |
+| Trip posting form         | `activity_post_trip.xml` (shared)       | ✅ Rebuilt  |
+| Earnings                  | `activity_earnings.xml`                 | ✅ Rebuilt  |
+| Trip list item            | `item_trip.xml`                         | ✅ Rebuilt  |
+| Main navigation           | `activity_main_driver.xml`              | ✅ Rebuilt  |
+| Trip list host            | `activity_trip_list.xml`               | ✅ Rebuilt  |
+
+---
+
+## Competitive Research
+
+### Uber Driver (Destination Mode)
+- Driver sets their **own** travel destination; the app matches only riders/senders going the same way.
+- May 2026 update: improved corridor matching to ensure each trip moves the driver *closer* to their destination.
+- Key UX insight: **the driver's route is the product** — the form is a route declaration, not a booking request.
+- Takeaway for GTW: the trip posting form should feel like declaring a journey, not filling out a shipping form.
+
+### Bolt Driver Destinations (SA launch, March 2024)
+- Same concept: driver sets destination, only gets ride requests along their corridor.
+- **Radius filter** (0.6–5.3 miles off-route) — driver controls how far they'll deviate.
+- Google Maps renders the route with the corridor visually.
+- Takeaway for GTW: expose `corridor_km` as a **slider** so drivers know exactly what they're committing to.
+
+### inDrive (formerly inDriver)
+- Passengers propose a fare; drivers can **counter-offer** a different price; negotiation happens in-app.
+- Recommended minimum bidding fare varies by location and route.
+- Drivers see the offered fare upfront — no black-box algorithm.
+- Takeaway for GTW: add **minimum payout preference** to the trip form (filter below a threshold), and add a **counter-offer** button on the request card (not just binary accept/decline).
+
+---
+
+## Offer Card Design (20-second rule)
+
+Following VP0's research principle: **the offer card must be readable at windshield distance in under 2 seconds**.
+
+Rules applied:
+- Max 4 data points: payout (amber, display-size), route, time, distance
+- `CircularProgressIndicator` countdown ring, 20 s, 100 ms interval — auto-declines on expiry
+- `ACCEPT` dominant (full-width, electric green, 56 dp tall)
+- Counter-offer reveals a panel (inDrive-inspired) — driver types an alternative amount, sends it
+- Decline is text-button weight — present but not primary
+
+---
+
+## Trip Posting Form Improvements
+
+### What was replaced
+
+| Old                          | New                                  | Why                            |
+|------------------------------|--------------------------------------|--------------------------------|
+| Plain `EditText` origin/dest | `AutoCompleteTextView` + Nominatim   | Real SA address search, no key |
+| Free-text departure time     | `MaterialDatePicker` + `TimePicker`  | Prevents format errors         |
+| Android `Spinner` for mode   | `ChipGroup` (Car / Bus / Train / …)  | Scannable, Material, glanceable|
+| No corridor preference       | Slider 1–20 km (Bolt-inspired)       | Driver owns their route buffer |
+| No fare floor                | "Min payout" field (inDrive-inspired)| Filters requests below threshold|
+
+### New Java classes (shared module)
+
+| Class                          | Purpose                                                  |
+|--------------------------------|----------------------------------------------------------|
+| `NominatimPlace`               | POJO for one OSM geocoding result                        |
+| `NominatimService`             | Retrofit interface → `nominatim.openstreetmap.org/search`|
+| `NominatimAutocompleteHelper`  | Debounced (450 ms) autocomplete manager, SA-biased       |
+
+### API changes
+`TripRepository.createTrip()` now sends two extra fields:
+
+```json
+{
+  "corridor_km": 5,
+  "min_fare": 80.0
+}
+```
+
+The backend should use `corridor_km` instead of the global `ROUTE_BUFFER_KM` constant when it is present, and skip route matches with a payout below `min_fare`.
+
+---
+
+## Counter-Offer Flow (inDrive-inspired)
 
 ```
-Background (surface)   #121212   — near-black, easy on OLED
-Surface elevated       #1E1E1E   — card backgrounds
-Surface overlay        #2A2A2A   — input fields, chips
-
-Brand green (primary)  #00C853   — electric lime-green, readable on dark
-Brand green pressed    #00A846   — pressed state
-Amber (earnings/CTA)   #FFB300   — kept from current accent, now glows on dark
-
-Status — Pending       #FF6D00   — deep orange
-Status — Matched       #2979FF   — electric blue  
-Status — Collected     #D500F9   — vivid purple
-Status — Delivered     #00C853   — green (same as primary)
-Status — Cancelled     #F44336   — material red
-
-Text primary           #FFFFFF   — body on dark
-Text secondary         #9E9E9E   — labels, captions
-Divider                #333333   — subtle separators
+Driver sees request card
+  → ACCEPT  → accepted, navigate to DriverTripLiveActivity
+  → Make Counter-Offer  → reveals inline panel
+      Driver types amount → Send → card collapses, status = "Waiting for sender…"
+      (TODO: POST /api/bookings/{id}/counter { amount })
+  → Decline → card collapses, status = "Declined"
+  → [20 s expire] → auto-decline, toast "Request expired"
 ```
 
-### Typography
+---
 
-- **Google font: Space Grotesk** — modern, slightly technical, great legibility; replaces default sans-serif
-- Fare / payout figures: **48 sp Bold** (read at arm's length)
-- Section headers: **20 sp SemiBold**
-- Body: **15 sp Regular**
-- Labels / status chips: **12 sp Medium**, ALL CAPS
+## Nominatim Usage Policy Compliance
 
-### Component redesign targets
-
-#### 1. Driver Dashboard (`fragment_driver_dashboard.xml`)
-**Current:** plain LinearLayout, one button, static text  
-**Proposed:**
-- Full-screen dark surface
-- Top strip: driver avatar + name + online status pill (green pulse animation when online)
-- **Hero card**: today's earnings figure `R 0.00` in 48 sp amber, "trips today" counter below
-- Bottom half: large online/offline FAB (green glow when online, grey when offline)
-- Stats row: trips · distance · rating in three equal chips
-
-#### 2. Trip Request Card (`activity_trip_requests.xml` + `item_trip.xml`)
-**Current:** two plain TextViews  
-**Proposed (the "offer card" — most critical screen):**
-- Full-screen modal / bottom sheet with dark overlay
-- **Fare** — 48 sp, amber, top-left: `R 45.00`
-- Parcel route: origin → destination with distance tag
-- Pickup detour: `+2.1 km off your route`
-- Parcel info chip: weight, size category
-- **Countdown ring** (circular progress, 20 s) — server-anchored
-- `ACCEPT` — full-width green button, 56 dp tall
-- `DECLINE` — text button, no guilt copy, always visible
-
-#### 3. Earnings (`activity_earnings.xml`)
-**Current:** three TextViews  
-**Proposed:**
-- Period toggle: Today / Week / Month (segmented control, green underline)
-- Hero: total payout in 48 sp amber
-- Stat row: Trips · Avg per trip · Distance — matching stat chips
-- Bar chart: last 7 days' earnings (simple custom view or MPAndroidChart)
-- Per-trip breakdown list below
-
-#### 4. Trip List (`activity_trip_list.xml` + `item_trip.xml`)
-**Current:** single TextView in a grey box  
-**Proposed card:**
-- Dark card (`#1E1E1E`) with 12 dp corners
-- Route: origin city → destination city (bold, one line each)
-- Date + time badge (top-right)
-- Status chip (colour-coded, per palette above)
-- Parcel count badge + fare on the bottom row
-
-#### 5. Bottom navigation
-**Current:** stock MaterialComponents BottomNav  
-**Proposed:**
-- Dark background (`#1E1E1E`), no elevation shadow
-- Active icon tint: `#00C853` (brand green)
-- Inactive tint: `#616161`
-- Selected item has a small green pill indicator, not underline
-- Icons: Dashboard · My Trips · Earnings · Profile
+- User-Agent header: `GoingThatWay Android App contact@goingthatway.app`
+- Debounce: 450 ms — well within 1-req/s limit
+- `countrycodes=za` — biases results to South Africa, reduces irrelevant results
+- Max 6 results per call — limits payload and render cost
 
 ---
 
-## Files to change (implementation scope)
+## Outstanding TODOs
 
-| File | Change |
-|------|--------|
-| `shared/.../values/colors.xml` | Full palette swap to Highveld Night |
-| `shared/.../values/themes.xml` | Parent → `Theme.MaterialComponents.DayNight.NoActionBar`; add new component styles |
-| `shared/.../values/dimens.xml` | Add `text_hero`, `text_display` sizes |
-| `driver/.../fragment_driver_dashboard.xml` | Full rebuild — dark hero + stats + FAB |
-| `driver/.../activity_trip_requests.xml` | Offer card bottom sheet |
-| `driver/.../item_trip.xml` | Dark card layout |
-| `driver/.../activity_earnings.xml` | Earnings hero + stats + list |
-| `driver/.../activity_main_driver.xml` | Dark nav bar |
-| `shared/.../res/drawable/` | New drawables: online pill, countdown ring, stat chips |
-
----
-
-## What is NOT changing in this proposal
-
-- Package names, module structure, Java source logic
-- API contracts / backend
-- Android manifest
-- Requester or Admin UI (separate task if needed)
+- [ ] Wire `POST /api/bookings/{id}/counter` API endpoint (backend + Android)
+- [ ] Backend: honour `corridor_km` from trip body (currently uses global constant)
+- [ ] Backend: honour `min_fare` filter in route matching
+- [ ] Map preview in trip form — small osmdroid MapView showing A→B corridor (infrastructure is in `OsmMapUtils.java`)
+- [ ] `TripFormActivity` (driver module placeholder) — redirect to `PostTripActivity` or remove duplicate
+- [ ] Live Activity / lock screen trip state (Android equivalent: foreground service notification)

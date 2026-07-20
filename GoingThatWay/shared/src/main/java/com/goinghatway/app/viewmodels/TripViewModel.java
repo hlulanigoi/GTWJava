@@ -26,14 +26,22 @@ public class TripViewModel extends AndroidViewModel {
         return repo.getMyTrips();
     }
 
+    /**
+     * Post a new driver trip.
+     *
+     * @param corridorKm Bolt-inspired corridor preference (km off-route driver accepts).
+     * @param minFare    inDrive-inspired minimum payout driver accepts per parcel (0 = no minimum).
+     */
     public MutableLiveData<ApiResponse<Trip>> createTrip(
             String originAddress, double originLat, double originLng,
-            String destAddress, double destLat, double destLng,
+            String destAddress,   double destLat,   double destLng,
             String departureTime, String arrivalTime,
-            String transportMode, int seatsAvailable, String notes) {
+            String transportMode, int seatsAvailable, String notes,
+            int corridorKm, double minFare) {
         return repo.createTrip(originAddress, originLat, originLng,
                 destAddress, destLat, destLng,
-                departureTime, arrivalTime, transportMode, seatsAvailable, notes);
+                departureTime, arrivalTime, transportMode, seatsAvailable, notes,
+                corridorKm, minFare);
     }
 
     public MutableLiveData<ApiResponse<List<Booking>>> matchRidesToTrip(String tripId) {

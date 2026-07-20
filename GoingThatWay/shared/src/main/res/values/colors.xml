@@ -21,6 +21,7 @@
     <color name="black">#000000</color>
     <color name="background">#F4F6F8</color>
     <color name="surface">#FFFFFF</color>
+    <color name="surface_elevated">#F0F0F0</color><!-- overridden to dark in driver module -->
     <color name="text_primary">#1A1A1A</color>
     <color name="text_secondary">#6B7280</color>
     <color name="text_on_primary">#FFFFFF</color>

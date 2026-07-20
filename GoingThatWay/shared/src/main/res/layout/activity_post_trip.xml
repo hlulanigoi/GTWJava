@@ -4,93 +4,433 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/background">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
-        app:title="Post My Trip"
-        app:titleTextColor="@color/white"
-        app:navigationIcon="@drawable/ic_arrow_back" />
+        android:background="@color/toolbar_bg"
+        app:title="Post a Trip"
+        app:titleTextColor="@color/text_primary"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationIconTint="@color/text_primary" />
 
-    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:padding="20dp">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- ════════════════════════════════
+                 SECTION: ROUTE
+                 ════════════════════════════════ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ROUTE"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary"
+                android:textStyle="bold"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Origin — OSM autocomplete -->
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="From (Origin)" style="@style/GtwInput" android:layout_marginBottom="12dp">
-                <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/til_origin"
+                style="@style/GtwInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="From (origin city / address)"
+                app:startIconDrawable="@android:drawable/ic_menu_mylocation"
+                app:startIconTint="@color/primary"
+                android:layout_marginBottom="12dp">
+
+                <AutoCompleteTextView
                     android:id="@+id/et_origin_address"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="textPostalAddress|textCapWords" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPostalAddress|textCapWords"
+                    android:completionThreshold="3"
+                    android:maxLines="1"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Destination — OSM autocomplete -->
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Destination Address" style="@style/GtwInput" android:layout_marginBottom="12dp">
-                <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/til_destination"
+                style="@style/GtwInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="To (destination city / address)"
+                app:startIconDrawable="@android:drawable/ic_menu_compass"
+                app:startIconTint="@color/accent"
+                android:layout_marginBottom="8dp">
+
+                <AutoCompleteTextView
                     android:id="@+id/et_destination_address"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="textPostalAddress|textCapWords" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPostalAddress|textCapWords"
+                    android:completionThreshold="3"
+                    android:maxLines="1"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Corridor offset info chip -->
+            <TextView
+                android:id="@+id/tv_corridor_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Parcel requests within 5 km of this route will be matched"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="20dp"
+                android:drawablePadding="6dp" />
+
+            <!-- ════════════════════════════════
+                 SECTION: SCHEDULE
+                 ════════════════════════════════ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SCHEDULE"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary"
+                android:textStyle="bold"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Departure date/time — tap to pick -->
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Departure Date &amp; Time" style="@style/GtwInput" android:layout_marginBottom="12dp">
+                style="@style/GtwInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Departure date &amp; time"
+                app:startIconDrawable="@android:drawable/ic_menu_recent_history"
+                app:startIconTint="@color/primary"
+                android:layout_marginBottom="12dp">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_departure_time"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:cursorVisible="false"
+                    android:inputType="none"
+                    android:textColor="@color/text_primary"
+                    android:hint="Tap to select" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Arrival date/time — optional -->
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Arrival Date &amp; Time (optional)" style="@style/GtwInput" android:layout_marginBottom="12dp">
+                style="@style/GtwInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Arrival date &amp; time (optional)"
+                app:startIconDrawable="@android:drawable/ic_menu_recent_history"
+                app:startIconTint="@color/text_secondary"
+                android:layout_marginBottom="20dp">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_arrival_time"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:cursorVisible="false"
+                    android:inputType="none"
+                    android:textColor="@color/text_primary"
+                    android:hint="Tap to select (optional)" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Transport Mode" android:textSize="13sp" android:textColor="@color/text_secondary"
-                android:layout_marginBottom="4dp" />
-            <Spinner android:id="@+id/spinner_transport_mode"
-                android:layout_width="match_parent" android:layout_height="56dp"
-                android:layout_marginBottom="12dp"
-                android:background="@android:drawable/btn_dropdown" />
+            <!-- ════════════════════════════════
+                 SECTION: TRANSPORT MODE (chips, replaces Spinner)
+                 ════════════════════════════════ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TRANSPORT MODE"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary"
+                android:textStyle="bold"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="10dp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_transport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                android:layout_marginBottom="20dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_car"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🚗  Car"
+                    android:checked="true"
+                    app:chipBackgroundColor="@color/surface_elevated"
+                    app:checkedIconTint="@color/primary"
+                    app:chipStrokeColor="@color/divider"
+                    app:chipStrokeWidth="1dp"
+                    android:textColor="@color/text_primary" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_bus"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🚌  Bus"
+                    app:chipBackgroundColor="@color/surface_elevated"
+                    app:checkedIconTint="@color/primary"
+                    app:chipStrokeColor="@color/divider"
+                    app:chipStrokeWidth="1dp"
+                    android:textColor="@color/text_primary" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_train"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🚂  Train"
+                    app:chipBackgroundColor="@color/surface_elevated"
+                    app:checkedIconTint="@color/primary"
+                    app:chipStrokeColor="@color/divider"
+                    app:chipStrokeWidth="1dp"
+                    android:textColor="@color/text_primary" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_walk"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🚶  Walk"
+                    app:chipBackgroundColor="@color/surface_elevated"
+                    app:checkedIconTint="@color/primary"
+                    app:chipStrokeColor="@color/divider"
+                    app:chipStrokeWidth="1dp"
+                    android:textColor="@color/text_primary" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_other"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📦  Other"
+                    app:chipBackgroundColor="@color/surface_elevated"
+                    app:checkedIconTint="@color/primary"
+                    app:chipStrokeColor="@color/divider"
+                    app:chipStrokeWidth="1dp"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <!-- ════════════════════════════════
+                 SECTION: CAPACITY
+                 ════════════════════════════════ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CAPACITY"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary"
+                android:textStyle="bold"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="10dp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Seats Available" style="@style/GtwInput" android:layout_marginBottom="12dp">
+                style="@style/GtwInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Seats / parcel slots available"
+                android:layout_marginBottom="20dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_seats_available"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="number" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textColor="@color/text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- ════════════════════════════════
+                 SECTION: PREFERENCES (Bolt + inDrive ideas)
+                 ════════════════════════════════ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DRIVER PREFERENCES"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary"
+                android:textStyle="bold"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Corridor width slider (Bolt-inspired) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_request_card"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:id="@+id/tv_corridor_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Accept pickups up to 5 km off my route"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Like Bolt's radius filter — only parcel requests within this corridor will reach you"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/slider_corridor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="1"
+                    android:valueTo="20"
+                    android:stepSize="1"
+                    android:value="5"
+                    app:thumbColor="@color/primary"
+                    app:trackColorActive="@color/primary"
+                    app:trackColorInactive="@color/divider"
+                    app:labelBehavior="floating" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1 km"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_secondary" />
+                    <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="20 km"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_secondary" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Minimum payout (inDrive-inspired) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_request_card"
+                android:padding="16dp"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Minimum payout per parcel"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Like inDrive — parcel requests below this amount won't reach you"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="10dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/GtwInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Min payout (R)"
+                    app:prefixText="R ">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_min_fare"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/text_primary" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <!-- ════════════════════════════════
+                 SECTION: NOTES
+                 ════════════════════════════════ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NOTES"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary"
+                android:textStyle="bold"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="10dp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Notes (optional)" style="@style/GtwInput" android:layout_marginBottom="20dp">
+                style="@style/GtwInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Notes for senders (optional)"
+                android:layout_marginBottom="24dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_notes"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="textMultiLine" android:lines="2" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:lines="2"
+                    android:minLines="2"
+                    android:textColor="@color/text_primary"
+                    android:hint="e.g. No fragile items, cash on delivery preferred" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <ProgressBar android:id="@+id/progress_bar"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_gravity="center" android:visibility="gone"
-                android:indeterminateTint="@color/primary" android:layout_marginBottom="8dp" />
+            <!-- Progress bar (shown while posting) -->
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:indeterminateTint="@color/primary"
+                android:layout_marginBottom="8dp" />
 
+            <!-- Post Trip CTA -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_post_trip"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Post Trip" android:textSize="16sp"
-                style="@style/Btn.Action" />
+                style="@style/Btn.Action"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="POST TRIP"
+                android:textSize="16sp"
+                android:letterSpacing="0.08" />
+
+            <!-- Removed old Spinner — now using ChipGroup above -->
+            <!-- Hidden view kept to avoid breaking any lingering references -->
+            <Spinner
+                android:id="@+id/spinner_transport_mode"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>
