@@ -32,9 +32,10 @@
         <activity android:name="com.goinghatway.app.activities.PostTripActivity" android:exported="false" />
         <activity android:name="com.goinghatway.app.activities.TripDetailActivity" android:exported="false" />
         <activity android:name="com.goinghatway.app.activities.TripMapActivity" android:exported="false" />
-        <activity android:name="com.goinghatway.driver.ui.EarningsActivity" android:exported="false" />
-        <activity android:name="com.goinghatway.driver.ui.SupportActivity" android:exported="false" />
-        <activity android:name="com.goinghatway.driver.ui.TripRequestsActivity" android:exported="false" />
+        <activity android:name="com.goinghatway.driver.DriverHomeActivity" android:exported="true" />
+        <activity android:name="com.goinghatway.driver.SubscriptionActivity" android:exported="false" />
+        <activity android:name="com.goinghatway.driver.PayoutActivity" android:exported="false" />
+        <activity android:name="com.goinghatway.driver.WalletActivity" android:exported="false" />
 
         <service
             android:name="com.goinghatway.driver.DriverFirebaseMessagingService"

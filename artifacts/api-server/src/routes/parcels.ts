@@ -1,30 +1,34 @@
 import { Router, type IRouter } from "express";
 import { z } from "zod";
-import { and, desc, eq, sql } from "drizzle-orm";
-import { db, parcelsTable, usersTable } from "@workspace/db";
+import { and, desc, eq } from "drizzle-orm";
+import { db, matchesTable, parcelsTable, tripsTable } from "@workspace/db";
 import { requireAuth } from "../middlewares/auth";
 import { fail, ok, paginated } from "../lib/response";
-import { toParcelJson } from "../lib/serialize";
+import { toMatchJson, toParcelJson } from "../lib/serialize";
 import { geocodeAddress } from "../lib/geocode";
-import { haversineKm } from "../lib/haversine";
+import { haversineKm, matchRideToRoute } from "../lib/haversine";
+import { Constants } from "../lib/constants";
 
 const router: IRouter = Router();
 
 const createParcelSchema = z.object({
   description: z.string().min(1),
-  weight_kg: z.coerce.number().positive(),
-  size_label: z.enum(["SMALL", "MEDIUM", "LARGE"]).default("SMALL"),
+  weight: z.coerce.number().positive(),
+  size: z.enum(["SMALL", "MEDIUM", "LARGE"]).default("SMALL"),
   pickup_address: z.string().min(1),
   destination_address: z.string().min(1),
   special_instructions: z.string().optional(),
   payment_reference: z.string().min(1),
 });
 
-function calculateFee(weightKg: number) {
-  const fee = Math.round((30 + weightKg * 10) * 100) / 100;
-  const carrierEarning = Math.round(fee * 0.8 * 100) / 100;
-  const platformFee = Math.round((fee - carrierEarning) * 100) / 100;
-  return { fee, carrierEarning, platformFee };
+const SIZE_BASE: Record<string, number> = { SMALL: 20, MEDIUM: 35, LARGE: 50 };
+
+function calculateFee(weight: number, size: string) {
+  const base = SIZE_BASE[size] ?? 20;
+  const fee = Math.round((base + weight * 5) * 100) / 100;
+  const platformFee = Math.round(fee * Constants.PLATFORM_FEE_PERCENT * 100) / 100;
+  const carrierEarning = Math.round((fee - platformFee) * 100) / 100;
+  return { fee, platformFee, carrierEarning };
 }
 
 router.get("/parcels", requireAuth, async (req, res) => {
@@ -51,7 +55,7 @@ router.get("/parcels", requireAuth, async (req, res) => {
 
   const total = filtered.length;
   const pageRows = filtered.slice((page - 1) * perPage, page * perPage);
-  paginated(res, pageRows.map((p) => toParcelJson(p)), total, page, perPage);
+  paginated(res, pageRows.map(toParcelJson), total, page, perPage);
 });
 
 router.get("/parcels/my", requireAuth, async (req, res) => {
@@ -59,23 +63,15 @@ router.get("/parcels/my", requireAuth, async (req, res) => {
     where: eq(parcelsTable.senderId, req.user!.userId),
     orderBy: desc(parcelsTable.createdAt),
   });
-  ok(res, rows.map((p) => toParcelJson(p)));
+  ok(res, rows.map(toParcelJson));
 });
 
 router.get("/parcels/:id", requireAuth, async (req, res) => {
   const parcel = await db.query.parcelsTable.findFirst({
-    where: eq(parcelsTable.id, (req.params.id as string)),
+    where: eq(parcelsTable.id, req.params.id as string),
   });
   if (!parcel) return fail(res, "Parcel not found", 404);
-
-  const [sender, carrier] = await Promise.all([
-    db.query.usersTable.findFirst({ where: eq(usersTable.id, parcel.senderId) }),
-    parcel.carrierId
-      ? db.query.usersTable.findFirst({ where: eq(usersTable.id, parcel.carrierId) })
-      : Promise.resolve(null),
-  ]);
-
-  ok(res, toParcelJson(parcel, { sender, carrier }));
+  ok(res, toParcelJson(parcel));
 });
 
 router.post("/parcels", requireAuth, async (req, res) => {
@@ -93,15 +89,15 @@ router.post("/parcels", requireAuth, async (req, res) => {
     return fail(res, err instanceof Error ? err.message : "Geocoding failed", 422);
   }
 
-  const { fee, carrierEarning, platformFee } = calculateFee(data.weight_kg);
+  const { fee, platformFee, carrierEarning } = calculateFee(data.weight, data.size);
 
   const [parcel] = await db
     .insert(parcelsTable)
     .values({
       senderId: req.user!.userId,
       description: data.description,
-      weight: String(data.weight_kg),
-      size: data.size_label,
+      weight: String(data.weight),
+      size: data.size,
       pickupAddress: data.pickup_address,
       pickupLat: String(pickup.lat),
       pickupLng: String(pickup.lng),
@@ -109,8 +105,8 @@ router.post("/parcels", requireAuth, async (req, res) => {
       destinationLat: String(destination.lat),
       destinationLng: String(destination.lng),
       fee: String(fee),
-      carrierEarning: String(carrierEarning),
       platformFee: String(platformFee),
+      carrierEarning: String(carrierEarning),
       paymentReference: data.payment_reference,
       specialInstructions: data.special_instructions,
     })
@@ -127,17 +123,17 @@ router.patch("/parcels/:id/status", requireAuth, async (req, res) => {
   if (!parsed.success) return fail(res, parsed.error.issues[0].message, 422);
 
   const parcel = await db.query.parcelsTable.findFirst({
-    where: eq(parcelsTable.id, (req.params.id as string)),
+    where: eq(parcelsTable.id, req.params.id as string),
   });
   if (!parcel) return fail(res, "Parcel not found", 404);
-  if (parcel.senderId !== req.user!.userId && parcel.carrierId !== req.user!.userId && req.user!.role !== "ADMIN") {
+  if (parcel.senderId !== req.user!.userId && req.user!.role !== "ADMIN") {
     return fail(res, "Not authorized to update this parcel", 403);
   }
 
   const [updated] = await db
     .update(parcelsTable)
     .set({ status: parsed.data.status })
-    .where(eq(parcelsTable.id, (req.params.id as string)))
+    .where(eq(parcelsTable.id, req.params.id as string))
     .returning();
 
   ok(res, toParcelJson(updated), "Status updated");
@@ -145,7 +141,7 @@ router.patch("/parcels/:id/status", requireAuth, async (req, res) => {
 
 router.delete("/parcels/:id", requireAuth, async (req, res) => {
   const parcel = await db.query.parcelsTable.findFirst({
-    where: eq(parcelsTable.id, (req.params.id as string)),
+    where: eq(parcelsTable.id, req.params.id as string),
   });
   if (!parcel) return fail(res, "Parcel not found", 404);
   if (parcel.senderId !== req.user!.userId && req.user!.role !== "ADMIN") {
@@ -155,8 +151,68 @@ router.delete("/parcels/:id", requireAuth, async (req, res) => {
     return fail(res, "Only pending parcels can be deleted", 409);
   }
 
-  await db.delete(parcelsTable).where(eq(parcelsTable.id, (req.params.id as string)));
+  await db.delete(parcelsTable).where(eq(parcelsTable.id, req.params.id as string));
   ok(res, null, "Parcel deleted");
+});
+
+/**
+ * Match all PENDING parcels against this trip's route using the Haversine corridor algorithm.
+ * Creates a Match record for each parcel that fits within the route buffer.
+ */
+router.post("/trips/:id/match-parcels", requireAuth, async (req, res) => {
+  const trip = await db.query.tripsTable.findFirst({
+    where: eq(tripsTable.id, req.params.id as string),
+  });
+  if (!trip) return fail(res, "Trip not found", 404);
+  if (trip.driverId !== req.user!.userId && req.user!.role !== "ADMIN") {
+    return fail(res, "Not authorized to match this trip", 403);
+  }
+
+  const pendingParcels = await db.query.parcelsTable.findMany({
+    where: eq(parcelsTable.status, "PENDING"),
+  });
+
+  const origin = { lat: Number(trip.originLat), lng: Number(trip.originLng) };
+  const destination = { lat: Number(trip.destinationLat), lng: Number(trip.destinationLng) };
+
+  const created = [];
+  for (const parcel of pendingParcels) {
+    const pickup = { lat: Number(parcel.pickupLat), lng: Number(parcel.pickupLng) };
+    const dropoff = { lat: Number(parcel.destinationLat), lng: Number(parcel.destinationLng) };
+
+    const result = matchRideToRoute(
+      origin,
+      destination,
+      pickup,
+      dropoff,
+      Constants.ROUTE_BUFFER_KM,
+      Constants.MAX_DETOUR_KM,
+    );
+    if (!result) continue;
+
+    const existing = await db.query.matchesTable.findFirst({
+      where: and(eq(matchesTable.tripId, trip.id), eq(matchesTable.parcelId, parcel.id)),
+    });
+    if (existing) continue;
+
+    const [match] = await db
+      .insert(matchesTable)
+      .values({
+        tripId: trip.id,
+        parcelId: parcel.id,
+        carrierId: trip.driverId,
+        senderId: parcel.senderId,
+        score: String(Math.round(result.score * 100) / 100),
+        alongRoute: result.isAlongRoute,
+        detourKm: String(Math.round(result.detourKm * 100) / 100),
+        carrierEarning: parcel.carrierEarning,
+      })
+      .returning();
+
+    created.push(toMatchJson(match, { parcel, trip }));
+  }
+
+  ok(res, created, `${created.length} match(es) found`);
 });
 
 export default router;

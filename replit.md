@@ -1,15 +1,31 @@
-# [Project name]
+# Going That Way
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A crowd-sourced parcel delivery platform: senders post parcels, travelers post trips, and the server matches them via a Haversine route-corridor algorithm. Includes admin role, ticket system, and bank-transfer payment flow.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- **API Server workflow** — start/restart the "API Server" workflow in Replit (runs `PORT=8080 pnpm --filter @workspace/api-server run dev`)
+- `pnpm --filter @workspace/api-server run dev` — run the API server manually (set `PORT=8080`)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
 - Required env: `DATABASE_URL` — Postgres connection string
+
+## API surface
+
+| Domain | Endpoints |
+|---|---|
+| Auth | `POST auth/register`, `POST auth/login`, `POST auth/logout`, `GET auth/me` |
+| Rides | `GET/POST rides`, `GET rides/my`, `GET/PATCH/DELETE rides/:id`, `POST rides/on-demand`, `PATCH rides/:id/status` |
+| Parcels | `GET/POST parcels`, `GET parcels/my`, `GET/PATCH/DELETE parcels/:id`, `POST trips/:id/match-parcels` |
+| Trips | `GET/POST trips`, `GET trips/my`, `GET/PATCH trips/:id`, `POST trips/:id/match` |
+| Bookings | `GET bookings`, `POST bookings/:id/accept|reject|pickup|complete` |
+| Matches | `GET matches`, `POST matches/:id/accept|reject|collect|deliver` |
+| Tickets | `GET tickets/my`, `GET tickets/price`, `POST tickets/purchase` |
+| Payments | `POST payments/initiate`, `POST payments/verify` |
+| Users | `GET users/:id`, `PATCH users/profile`, `POST users/me/apply-driver` |
+| Admin | `GET admin/stats`, `GET/PATCH admin/users/:id/*`, `GET admin/drivers/pending`, `PATCH admin/drivers/:id/approve|reject`, `GET/PATCH admin/rides/:id/status`, `GET admin/trips`, `GET admin/tickets`, `PATCH admin/tickets/price`, `GET/PATCH admin/payments/pending|:ref/verify|reject`, `GET admin/reports/revenue` |
 
 ## Stack
 
