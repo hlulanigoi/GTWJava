@@ -1,18 +1,46 @@
 [
     {
-        "merged": "com.goinghatway.driver-mergeDebugResources-51:/layout/activity_main.xml",
-        "source": "com.goinghatway.driver-main-54:/layout/activity_main.xml"
+        "merged": "com.goinghatway.driver-mergeDebugResources-57:/layout/activity_login.xml",
+        "source": "com.goinghatway.driver-main-60:/layout/activity_login.xml"
     },
     {
-        "merged": "com.goinghatway.driver-mergeDebugResources-51:/layout/activity_login.xml",
-        "source": "com.goinghatway.driver-main-54:/layout/activity_login.xml"
+        "merged": "com.goinghatway.driver-mergeDebugResources-57:/layout/fragment_driver_dashboard.xml",
+        "source": "com.goinghatway.driver-main-60:/layout/fragment_driver_dashboard.xml"
     },
     {
-        "merged": "com.goinghatway.driver-mergeDebugResources-51:/layout/activity_trip_form.xml",
-        "source": "com.goinghatway.driver-main-54:/layout/activity_trip_form.xml"
+        "merged": "com.goinghatway.driver-mergeDebugResources-57:/layout/activity_support.xml",
+        "source": "com.goinghatway.driver-main-60:/layout/activity_support.xml"
     },
     {
-        "merged": "com.goinghatway.driver-mergeDebugResources-51:/layout/activity_trip_list.xml",
-        "source": "com.goinghatway.driver-main-54:/layout/activity_trip_list.xml"
+        "merged": "com.goinghatway.driver-mergeDebugResources-57:/layout/item_trip.xml",
+        "source": "com.goinghatway.driver-main-60:/layout/item_trip.xml"
+    },
+    {
+        "merged": "com.goinghatway.driver-mergeDebugResources-57:/layout/activity_main.xml",
+        "source": "com.goinghatway.driver-main-60:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.goinghatway.driver-mergeDebugResources-57:/layout/activity_trip_list.xml",
+        "source": "com.goinghatway.driver-main-60:/layout/activity_trip_list.xml"
+    },
+    {
+        "merged": "com.goinghatway.driver-mergeDebugResources-57:/layout/activity_profile.xml",
+        "source": "com.goinghatway.driver-main-60:/layout/activity_profile.xml"
+    },
+    {
+        "merged": "com.goinghatway.driver-mergeDebugResources-57:/layout/activity_trip_requests.xml",
+        "source": "com.goinghatway.driver-main-60:/layout/activity_trip_requests.xml"
+    },
+    {
+        "merged": "com.goinghatway.driver-mergeDebugResources-57:/layout/activity_trip_form.xml",
+        "source": "com.goinghatway.driver-main-60:/layout/activity_trip_form.xml"
+    },
+    {
+        "merged": "com.goinghatway.driver-mergeDebugResources-57:/layout/activity_earnings.xml",
+        "source": "com.goinghatway.driver-main-60:/layout/activity_earnings.xml"
+    },
+    {
+        "merged": "com.goinghatway.driver-mergeDebugResources-57:/layout/activity_main_driver.xml",
+        "source": "com.goinghatway.driver-main-60:/layout/activity_main_driver.xml"
     }
 ]

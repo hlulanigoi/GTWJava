@@ -1,10 +1,20 @@
 {
     "logs": [
         {
-            "outputFile": "com.goinghatway.driver-mergeDebugResources-50:/values-v16/values-v16.xml",
+            "outputFile": "com.goinghatway.driver-mergeDebugResources-56:/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Irgadgets\\.gradle\\caches\\8.14.5\\transforms\\9f134a61656ca49220fac2a0a7d108b1\\transformed\\appcompat-1.6.1\\res\\values-v16\\values-v16.xml",
+                    "source": "C:\\Users\\Irgadgets\\.gradle\\caches\\8.14.5\\transforms\\2994dbc725f013011d468e4d2e55c6fd\\transformed\\core-1.12.0\\res\\values-v16\\values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "65",
+                        "endOffsets": "116"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Irgadgets\\.gradle\\caches\\8.14.5\\transforms\\6f9c29cbc8f0454721e5eed764dd0f8e\\transformed\\appcompat-1.6.1\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -20,16 +30,6 @@
                         "endLines": "6",
                         "endColumns": "12",
                         "endOffsets": "289"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Irgadgets\\.gradle\\caches\\8.14.5\\transforms\\264f55e0e159bd0f10d4ad1162386d49\\transformed\\core-1.9.0\\res\\values-v16\\values-v16.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "65",
-                        "endOffsets": "116"
                     }
                 }
             ]
