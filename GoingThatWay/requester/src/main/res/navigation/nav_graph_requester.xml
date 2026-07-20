@@ -5,7 +5,7 @@
     app:startDestination="@id/nav_home">
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.goinghatway.app.fragments.HomeFragment"
+        android:name="com.goinghatway.requester.fragments.RequesterHomeFragment"
         android:label="Home" />
     <fragment
         android:id="@+id/nav_rides"

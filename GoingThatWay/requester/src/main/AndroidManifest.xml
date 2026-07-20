@@ -32,6 +32,8 @@
         <activity android:name="com.goinghatway.app.activities.BuyTicketActivity" android:exported="false" />
         <activity android:name="com.goinghatway.app.activities.RequestRideActivity" android:exported="false" />
 
+        <activity android:name=".RequesterWalletActivity" android:exported="false" />
+        <activity android:name=".RequesterActiveRideActivity" android:exported="false" />
     </application>
 
 </manifest>
