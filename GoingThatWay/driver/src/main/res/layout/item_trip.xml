@@ -3,13 +3,62 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp"
-    android:background="#F5F5F5"
-    android:layout_marginBottom="8dp">
+    android:background="@drawable/bg_request_card"
+    android:padding="16dp"
+    android:layout_marginBottom="10dp">
 
+    <!-- Route title (set by adapter) -->
     <TextView
         android:id="@+id/tv_trip_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="10dp" />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"
+        android:layout_marginBottom="10dp" />
+
+    <!-- Bottom row: status chip + fare -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_trip_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PENDING"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/status_pending"
+            android:background="@drawable/bg_status_badge"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:letterSpacing="0.08" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tv_trip_fare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="R —"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/accent" />
+    </LinearLayout>
+
 </LinearLayout>

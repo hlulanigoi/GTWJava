@@ -7,6 +7,7 @@ import com.goinghatway.driver.R;
 import com.goinghatway.driver.databinding.ActivityEarningsBinding;
 
 public class EarningsActivity extends AppCompatActivity {
+
     private ActivityEarningsBinding binding;
 
     @Override
@@ -15,8 +16,17 @@ public class EarningsActivity extends AppCompatActivity {
         binding = ActivityEarningsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Seed with demo data — replace with API call when backend is wired
         binding.tvTodayEarnings.setText("R 420.00");
-        binding.tvWeeklyEarnings.setText("R 2,940.00");
-        binding.tvTripsCount.setText("12 trips this week");
+        binding.tvWeeklyEarnings.setText("R 2,940.00 this week");
+        binding.tvTripsCount.setText("12");
+
+        // Derived stats
+        if (binding.tvAvgPerTrip != null) {
+            binding.tvAvgPerTrip.setText("R 245");
+        }
+        if (binding.tvAcceptanceRate != null) {
+            binding.tvAcceptanceRate.setText("94%");
+        }
     }
 }

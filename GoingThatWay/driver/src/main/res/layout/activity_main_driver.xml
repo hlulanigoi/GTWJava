@@ -21,7 +21,8 @@
         android:layout_gravity="bottom"
         android:background="@color/surface"
         app:menu="@menu/bottom_nav_driver"
-        app:itemIconTint="@color/primary"
-        app:itemTextColor="@color/primary" />
+        app:itemIconTint="@color/bottom_nav_tint"
+        app:itemTextColor="@color/bottom_nav_tint"
+        app:labelVisibilityMode="labeled" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
