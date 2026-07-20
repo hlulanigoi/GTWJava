@@ -7,9 +7,9 @@
         android:title="@string/nav_home" />
 
     <item
-        android:id="@+id/nav_parcels"
+        android:id="@+id/nav_rides"
         android:icon="@android:drawable/ic_menu_send"
-        android:title="@string/nav_parcels" />
+        android:title="@string/nav_rides" />
 
     <item
         android:id="@+id/nav_trips"

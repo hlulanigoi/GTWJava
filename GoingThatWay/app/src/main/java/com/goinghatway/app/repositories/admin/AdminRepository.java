@@ -8,7 +8,7 @@ import com.goinghatway.app.api.AdminApiService;
 import com.goinghatway.app.api.responses.ApiResponse;
 import com.goinghatway.app.api.responses.PaginatedResponse;
 import com.goinghatway.app.models.AdminStats;
-import com.goinghatway.app.models.Parcel;
+import com.goinghatway.app.models.Ride;
 import com.goinghatway.app.models.Ticket;
 import com.goinghatway.app.models.Trip;
 import com.goinghatway.app.models.User;
@@ -78,30 +78,70 @@ public class AdminRepository {
         return result;
     }
 
-    // ─── Parcels ──────────────────────────────────────────────────────────────
-    public LiveData<ApiResponse<PaginatedResponse<Parcel>>> getParcels(int page, String status) {
-        MutableLiveData<ApiResponse<PaginatedResponse<Parcel>>> result = new MutableLiveData<>();
-        api.getParcels(page, status).enqueue(new Callback<ApiResponse<PaginatedResponse<Parcel>>>() {
-            @Override public void onResponse(Call<ApiResponse<PaginatedResponse<Parcel>>> c,
-                                              Response<ApiResponse<PaginatedResponse<Parcel>>> r) {
-                result.setValue(r.isSuccessful() && r.body() != null ? r.body() : error("Failed to load parcels"));
+    // ─── Driver approvals ─────────────────────────────────────────────────────
+    public LiveData<ApiResponse<List<User>>> getPendingDriverApplications() {
+        MutableLiveData<ApiResponse<List<User>>> result = new MutableLiveData<>();
+        api.getPendingDriverApplications().enqueue(new Callback<ApiResponse<List<User>>>() {
+            @Override public void onResponse(Call<ApiResponse<List<User>>> c, Response<ApiResponse<List<User>>> r) {
+                result.setValue(r.isSuccessful() && r.body() != null ? r.body() : error("Failed to load applications"));
             }
-            @Override public void onFailure(Call<ApiResponse<PaginatedResponse<Parcel>>> c, Throwable t) {
+            @Override public void onFailure(Call<ApiResponse<List<User>>> c, Throwable t) {
                 result.setValue(error(t.getMessage()));
             }
         });
         return result;
     }
 
-    public LiveData<ApiResponse<Parcel>> updateParcelStatus(String id, String status) {
-        MutableLiveData<ApiResponse<Parcel>> result = new MutableLiveData<>();
+    public LiveData<ApiResponse<User>> approveDriver(String userId) {
+        MutableLiveData<ApiResponse<User>> result = new MutableLiveData<>();
+        api.approveDriver(userId).enqueue(new Callback<ApiResponse<User>>() {
+            @Override public void onResponse(Call<ApiResponse<User>> c, Response<ApiResponse<User>> r) {
+                result.setValue(r.isSuccessful() && r.body() != null ? r.body() : error("Failed to approve"));
+            }
+            @Override public void onFailure(Call<ApiResponse<User>> c, Throwable t) {
+                result.setValue(error(t.getMessage()));
+            }
+        });
+        return result;
+    }
+
+    public LiveData<ApiResponse<User>> rejectDriver(String userId) {
+        MutableLiveData<ApiResponse<User>> result = new MutableLiveData<>();
+        api.rejectDriver(userId).enqueue(new Callback<ApiResponse<User>>() {
+            @Override public void onResponse(Call<ApiResponse<User>> c, Response<ApiResponse<User>> r) {
+                result.setValue(r.isSuccessful() && r.body() != null ? r.body() : error("Failed to reject"));
+            }
+            @Override public void onFailure(Call<ApiResponse<User>> c, Throwable t) {
+                result.setValue(error(t.getMessage()));
+            }
+        });
+        return result;
+    }
+
+    // ─── Rides ────────────────────────────────────────────────────────────────
+    public LiveData<ApiResponse<PaginatedResponse<Ride>>> getRides(int page, String status) {
+        MutableLiveData<ApiResponse<PaginatedResponse<Ride>>> result = new MutableLiveData<>();
+        api.getRides(page, status).enqueue(new Callback<ApiResponse<PaginatedResponse<Ride>>>() {
+            @Override public void onResponse(Call<ApiResponse<PaginatedResponse<Ride>>> c,
+                                              Response<ApiResponse<PaginatedResponse<Ride>>> r) {
+                result.setValue(r.isSuccessful() && r.body() != null ? r.body() : error("Failed to load rides"));
+            }
+            @Override public void onFailure(Call<ApiResponse<PaginatedResponse<Ride>>> c, Throwable t) {
+                result.setValue(error(t.getMessage()));
+            }
+        });
+        return result;
+    }
+
+    public LiveData<ApiResponse<Ride>> updateRideStatus(String id, String status) {
+        MutableLiveData<ApiResponse<Ride>> result = new MutableLiveData<>();
         Map<String, String> body = new HashMap<>();
         body.put("status", status);
-        api.updateParcelStatus(id, body).enqueue(new Callback<ApiResponse<Parcel>>() {
-            @Override public void onResponse(Call<ApiResponse<Parcel>> c, Response<ApiResponse<Parcel>> r) {
+        api.updateRideStatus(id, body).enqueue(new Callback<ApiResponse<Ride>>() {
+            @Override public void onResponse(Call<ApiResponse<Ride>> c, Response<ApiResponse<Ride>> r) {
                 result.setValue(r.isSuccessful() && r.body() != null ? r.body() : error("Failed"));
             }
-            @Override public void onFailure(Call<ApiResponse<Parcel>> c, Throwable t) {
+            @Override public void onFailure(Call<ApiResponse<Ride>> c, Throwable t) {
                 result.setValue(error(t.getMessage()));
             }
         });

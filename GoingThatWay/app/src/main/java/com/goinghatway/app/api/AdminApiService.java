@@ -3,7 +3,7 @@ package com.goinghatway.app.api;
 import com.goinghatway.app.api.responses.ApiResponse;
 import com.goinghatway.app.api.responses.PaginatedResponse;
 import com.goinghatway.app.models.AdminStats;
-import com.goinghatway.app.models.Parcel;
+import com.goinghatway.app.models.Ride;
 import com.goinghatway.app.models.Ticket;
 import com.goinghatway.app.models.Trip;
 import com.goinghatway.app.models.User;
@@ -41,15 +41,25 @@ public interface AdminApiService {
     @PATCH("admin/users/{id}/role")
     Call<ApiResponse<User>> changeRole(@Path("id") String id, @Body Map<String, String> body);
 
-    // ─── Parcels ──────────────────────────────────────────────────────────────
-    @GET("admin/parcels")
-    Call<ApiResponse<PaginatedResponse<Parcel>>> getParcels(
+    // ─── Driver approvals ─────────────────────────────────────────────────────
+    @GET("admin/drivers/pending")
+    Call<ApiResponse<List<User>>> getPendingDriverApplications();
+
+    @PATCH("admin/drivers/{id}/approve")
+    Call<ApiResponse<User>> approveDriver(@Path("id") String id);
+
+    @PATCH("admin/drivers/{id}/reject")
+    Call<ApiResponse<User>> rejectDriver(@Path("id") String id);
+
+    // ─── Rides ────────────────────────────────────────────────────────────────
+    @GET("admin/rides")
+    Call<ApiResponse<PaginatedResponse<Ride>>> getRides(
             @Query("page") int page,
             @Query("status") String status
     );
 
-    @PATCH("admin/parcels/{id}/status")
-    Call<ApiResponse<Parcel>> updateParcelStatus(
+    @PATCH("admin/rides/{id}/status")
+    Call<ApiResponse<Ride>> updateRideStatus(
             @Path("id") String id,
             @Body Map<String, String> body
     );

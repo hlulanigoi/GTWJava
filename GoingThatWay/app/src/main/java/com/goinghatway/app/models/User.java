@@ -25,11 +25,11 @@ public class User {
     @SerializedName("rating")
     private double rating;
 
-    @SerializedName("total_deliveries")
-    private int totalDeliveries;
+    @SerializedName("total_rides_driven")
+    private int totalRidesDriven;
 
-    @SerializedName("total_parcels_sent")
-    private int totalParcelsSent;
+    @SerializedName("total_rides_taken")
+    private int totalRidesTaken;
 
     @SerializedName("tickets_owned")
     private int ticketsOwned;
@@ -42,6 +42,18 @@ public class User {
 
     @SerializedName("is_active")
     private boolean isActive;
+
+    @SerializedName("is_approved_driver")
+    private boolean isApprovedDriver;
+
+    @SerializedName("license_number")
+    private String licenseNumber;
+
+    @SerializedName("vehicle_plate")
+    private String vehiclePlate;
+
+    @SerializedName("vehicle_model")
+    private String vehicleModel;
 
     @SerializedName("created_at")
     private String createdAt;
@@ -68,11 +80,11 @@ public class User {
     public double getRating() { return rating; }
     public void setRating(double rating) { this.rating = rating; }
 
-    public int getTotalDeliveries() { return totalDeliveries; }
-    public void setTotalDeliveries(int totalDeliveries) { this.totalDeliveries = totalDeliveries; }
+    public int getTotalRidesDriven() { return totalRidesDriven; }
+    public void setTotalRidesDriven(int totalRidesDriven) { this.totalRidesDriven = totalRidesDriven; }
 
-    public int getTotalParcelsSent() { return totalParcelsSent; }
-    public void setTotalParcelsSent(int totalParcelsSent) { this.totalParcelsSent = totalParcelsSent; }
+    public int getTotalRidesTaken() { return totalRidesTaken; }
+    public void setTotalRidesTaken(int totalRidesTaken) { this.totalRidesTaken = totalRidesTaken; }
 
     public int getTicketsOwned() { return ticketsOwned; }
     public void setTicketsOwned(int ticketsOwned) { this.ticketsOwned = ticketsOwned; }
@@ -85,6 +97,18 @@ public class User {
 
     public boolean isActive() { return isActive; }
     public void setActive(boolean active) { isActive = active; }
+
+    public boolean isApprovedDriver() { return isApprovedDriver; }
+    public void setApprovedDriver(boolean approvedDriver) { isApprovedDriver = approvedDriver; }
+
+    public String getLicenseNumber() { return licenseNumber; }
+    public void setLicenseNumber(String licenseNumber) { this.licenseNumber = licenseNumber; }
+
+    public String getVehiclePlate() { return vehiclePlate; }
+    public void setVehiclePlate(String vehiclePlate) { this.vehiclePlate = vehiclePlate; }
+
+    public String getVehicleModel() { return vehicleModel; }
+    public void setVehicleModel(String vehicleModel) { this.vehicleModel = vehicleModel; }
 
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }

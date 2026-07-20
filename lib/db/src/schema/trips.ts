@@ -3,6 +3,7 @@ import {
   text,
   uuid,
   numeric,
+  integer,
   timestamp,
   pgEnum,
 } from "drizzle-orm/pg-core";
@@ -26,7 +27,7 @@ export const transportModeEnum = pgEnum("transport_mode", [
 
 export const tripsTable = pgTable("trips", {
   id: uuid("id").primaryKey().defaultRandom(),
-  carrierId: uuid("carrier_id").notNull().references(() => usersTable.id),
+  driverId: uuid("driver_id").notNull().references(() => usersTable.id),
 
   originAddress: text("origin_address").notNull(),
   originLat: numeric("origin_lat", { precision: 10, scale: 7 }).notNull().default("0"),
@@ -40,7 +41,7 @@ export const tripsTable = pgTable("trips", {
   arrivalTime: timestamp("arrival_time", { withTimezone: true }),
 
   transportMode: transportModeEnum("transport_mode").notNull().default("CAR"),
-  capacityKg: numeric("capacity_kg", { precision: 6, scale: 2 }).notNull(),
+  seatsAvailable: integer("seats_available").notNull().default(1),
   notes: text("notes"),
 
   status: tripStatusEnum("status").notNull().default("ACTIVE"),

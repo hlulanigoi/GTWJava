@@ -1,7 +1,7 @@
 /**
  * Haversine distance + route-corridor matching.
  * Mirrors the client-side RouteMatchingUtils.java logic so a trip's route can be
- * matched against pending parcels server-side (POST /trips/:id/match).
+ * matched against pending rides server-side (POST /trips/:id/match).
  */
 const EARTH_RADIUS_KM = 6371;
 
@@ -62,11 +62,11 @@ export interface MatchResult {
 }
 
 /**
- * Score how well a parcel (pickup -> destination) fits along a trip's route (origin -> destination).
+ * Score how well a ride (pickup -> destination) fits along a trip's route (origin -> destination).
  * `bufferKm` is the corridor half-width considered "along route" (no real detour).
  * `maxDetourKm` is the max extra distance still considered a viable match.
  */
-export function matchParcelToRoute(
+export function matchRideToRoute(
   origin: LatLng,
   destination: LatLng,
   pickup: LatLng,

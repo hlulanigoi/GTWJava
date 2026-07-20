@@ -46,6 +46,15 @@
                 android:textSize="15sp"
                 android:textColor="@color/accent" />
 
+            <TextView
+                android:id="@+id/tv_driver_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#A5D6A7"
+                android:layout_marginTop="4dp"
+                android:visibility="gone" />
+
         </LinearLayout>
 
         <!-- Stats row -->
@@ -64,12 +73,12 @@
                 app:cardCornerRadius="12dp">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical" android:gravity="center" android:padding="16dp">
-                    <TextView android:id="@+id/tv_deliveries"
+                    <TextView android:id="@+id/tv_rides_driven"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="0" android:textSize="24sp" android:textStyle="bold"
                         android:textColor="@color/primary" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Deliveries" android:textSize="11sp" android:textColor="@color/text_secondary" />
+                        android:text="Driven" android:textSize="11sp" android:textColor="@color/text_secondary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -82,12 +91,12 @@
                 app:cardCornerRadius="12dp">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical" android:gravity="center" android:padding="16dp">
-                    <TextView android:id="@+id/tv_parcels_sent"
+                    <TextView android:id="@+id/tv_rides_taken"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="0" android:textSize="24sp" android:textStyle="bold"
                         android:textColor="@color/primary" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Sent" android:textSize="11sp" android:textColor="@color/text_secondary" />
+                        android:text="Taken" android:textSize="11sp" android:textColor="@color/text_secondary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -145,6 +154,17 @@
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- Apply to be driver -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_apply_driver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Apply to be a Driver"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            style="@style/Btn.Action"
+            android:visibility="gone" />
 
         <!-- Log out -->
         <com.google.android.material.button.MaterialButton

@@ -8,7 +8,7 @@ import com.goinghatway.app.api.ApiClient;
 import com.goinghatway.app.api.ApiService;
 import com.goinghatway.app.api.responses.ApiResponse;
 import com.goinghatway.app.api.responses.PaginatedResponse;
-import com.goinghatway.app.models.Match;
+import com.goinghatway.app.models.Booking;
 import com.goinghatway.app.models.Trip;
 
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public class TripRepository {
             String originAddress, double originLat, double originLng,
             String destAddress, double destLat, double destLng,
             String departureTime, String arrivalTime,
-            String transportMode, double capacityKg, String notes) {
+            String transportMode, int seatsAvailable, String notes) {
 
         MutableLiveData<ApiResponse<Trip>> result = new MutableLiveData<>();
         Map<String, Object> body = new HashMap<>();
@@ -61,7 +61,7 @@ public class TripRepository {
         body.put("departure_time", departureTime);
         body.put("arrival_time", arrivalTime);
         body.put("transport_mode", transportMode);
-        body.put("available_capacity_kg", capacityKg);
+        body.put("seats_available", seatsAvailable);
         body.put("notes", notes);
 
         api.createTrip(body).enqueue(new Callback<ApiResponse<Trip>>() {
@@ -79,17 +79,17 @@ public class TripRepository {
         return result;
     }
 
-    public MutableLiveData<ApiResponse<List<Match>>> matchParcelsToTrip(String tripId) {
-        MutableLiveData<ApiResponse<List<Match>>> result = new MutableLiveData<>();
-        api.matchParcelsToTrip(tripId).enqueue(new Callback<ApiResponse<List<Match>>>() {
+    public MutableLiveData<ApiResponse<List<Booking>>> matchRidesToTrip(String tripId) {
+        MutableLiveData<ApiResponse<List<Booking>>> result = new MutableLiveData<>();
+        api.matchRidesToTrip(tripId).enqueue(new Callback<ApiResponse<List<Booking>>>() {
             @Override
-            public void onResponse(Call<ApiResponse<List<Match>>> call,
-                                   Response<ApiResponse<List<Match>>> response) {
+            public void onResponse(Call<ApiResponse<List<Booking>>> call,
+                                   Response<ApiResponse<List<Booking>>> response) {
                 result.postValue(response.isSuccessful() ? response.body() : err("Matching failed"));
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<List<Match>>> call, Throwable t) {
+            public void onFailure(Call<ApiResponse<List<Booking>>> call, Throwable t) {
                 result.postValue(err("Network error: " + t.getMessage()));
             }
         });

@@ -17,21 +17,22 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.goinghatway.app.activities.ParcelDetailActivity;
-import com.goinghatway.app.adapters.ParcelAdapter;
+import com.goinghatway.app.activities.RequestRideActivity;
+import com.goinghatway.app.activities.RideDetailActivity;
+import com.goinghatway.app.adapters.RideAdapter;
 import com.goinghatway.app.databinding.FragmentHomeBinding;
 import com.goinghatway.app.utils.Constants;
 import com.goinghatway.app.utils.OsmMapUtils;
 import com.goinghatway.app.utils.SessionManager;
-import com.goinghatway.app.viewmodels.ParcelViewModel;
+import com.goinghatway.app.viewmodels.RideViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    private ParcelViewModel viewModel;
-    private ParcelAdapter adapter;
+    private RideViewModel viewModel;
+    private RideAdapter adapter;
     private FusedLocationProviderClient fusedLocationClient;
     private double userLat = OsmMapUtils.SA_LAT;
     private double userLng = OsmMapUtils.SA_LNG;
@@ -40,9 +41,9 @@ public class HomeFragment extends Fragment {
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
                 if (granted) {
                     OsmMapUtils.addMyLocation(binding.mapView, requireContext());
-                    fetchLastLocationThenLoadParcels();
+                    fetchLastLocationThenLoadRides();
                 } else {
-                    loadParcels(); // fall back to default region
+                    loadRides(); // fall back to default region
                 }
             });
 
@@ -56,7 +57,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(ParcelViewModel.class);
+        viewModel = new ViewModelProvider(this).get(RideViewModel.class);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
 
         SessionManager session = new SessionManager(requireContext());
@@ -65,6 +66,9 @@ public class HomeFragment extends Fragment {
         setupMap();
         setupRecycler();
         requestLocationThenLoad();
+
+        binding.btnRequestRideNow.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), RequestRideActivity.class)));
 
         binding.swipeRefresh.setOnRefreshListener(this::requestLocationThenLoad);
     }
@@ -76,16 +80,16 @@ public class HomeFragment extends Fragment {
 
     private void requestLocationThenLoad() {
         if (hasLocationPermission()) {
-            fetchLastLocationThenLoadParcels();
+            fetchLastLocationThenLoadRides();
         } else {
             locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         }
     }
 
-    @SuppressWarnings("MissingPermission") // guarded by hasLocationPermission() at every call site
-    private void fetchLastLocationThenLoadParcels() {
+    @SuppressWarnings("MissingPermission")
+    private void fetchLastLocationThenLoadRides() {
         if (!hasLocationPermission()) {
-            loadParcels();
+            loadRides();
             return;
         }
         fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
@@ -93,8 +97,8 @@ public class HomeFragment extends Fragment {
                 userLat = location.getLatitude();
                 userLng = location.getLongitude();
             }
-            loadParcels();
-        }).addOnFailureListener(e -> loadParcels());
+            loadRides();
+        }).addOnFailureListener(e -> loadRides());
     }
 
     private void setupMap() {
@@ -107,24 +111,24 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupRecycler() {
-        adapter = new ParcelAdapter(parcel -> {
-            Intent intent = new Intent(requireContext(), ParcelDetailActivity.class);
-            intent.putExtra(Constants.EXTRA_PARCEL_ID, parcel.getId());
+        adapter = new RideAdapter(ride -> {
+            Intent intent = new Intent(requireContext(), RideDetailActivity.class);
+            intent.putExtra(Constants.EXTRA_RIDE_ID, ride.getId());
             startActivity(intent);
         });
-        binding.rvNearbyParcels.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.rvNearbyParcels.setAdapter(adapter);
+        binding.rvNearbyRides.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.rvNearbyRides.setAdapter(adapter);
     }
 
-    private void loadParcels() {
+    private void loadRides() {
         if (binding == null) return;
         binding.progressBar.setVisibility(View.VISIBLE);
-        viewModel.getParcels(1, "PENDING", userLat, userLng, 50)
+        viewModel.getRides(userLat, userLng, 50, "PENDING")
                 .observe(getViewLifecycleOwner(), response -> {
                     binding.progressBar.setVisibility(View.GONE);
                     binding.swipeRefresh.setRefreshing(false);
                     if (response != null && response.isSuccess() && response.getData() != null) {
-                        adapter.setParcels(response.getData().getData());
+                        adapter.setRides(response.getData().getData());
                         boolean empty = response.getData().getData() == null
                                 || response.getData().getData().isEmpty();
                         binding.tvEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);

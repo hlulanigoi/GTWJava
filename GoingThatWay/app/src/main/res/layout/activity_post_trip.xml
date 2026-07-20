@@ -15,27 +15,13 @@
         app:titleTextColor="@color/white"
         app:navigationIcon="@drawable/ic_arrow_back" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <!-- Route section -->
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Your Route"
-                android:textSize="14sp" android:textStyle="bold"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="10dp" android:layout_marginTop="4dp" />
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="20dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="From (Origin)"
-                style="@style/GtwInput" android:layout_marginBottom="12dp">
+                android:hint="From (Origin)" style="@style/GtwInput" android:layout_marginBottom="12dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_origin_address"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -44,68 +30,51 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="To (Destination)"
-                style="@style/GtwInput" android:layout_marginBottom="12dp">
+                android:hint="Destination Address" style="@style/GtwInput" android:layout_marginBottom="12dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_destination_address"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:inputType="textPostalAddress|textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Timing section -->
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Timing"
-                android:textSize="14sp" android:textStyle="bold"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="10dp" android:layout_marginTop="8dp" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Departure Date &amp; Time (e.g. 2025-08-15 09:00)"
-                style="@style/GtwInput" android:layout_marginBottom="12dp">
+                android:hint="Departure Date &amp; Time" style="@style/GtwInput" android:layout_marginBottom="12dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_departure_time"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="datetime" android:focusable="true"
-                    android:clickable="true" />
+                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Arrival Date &amp; Time (optional)"
-                style="@style/GtwInput" android:layout_marginBottom="12dp">
+                android:hint="Arrival Date &amp; Time (optional)" style="@style/GtwInput" android:layout_marginBottom="12dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_arrival_time"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="datetime" />
+                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Travel details -->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Travel Details"
-                android:textSize="14sp" android:textStyle="bold"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="10dp" android:layout_marginTop="8dp" />
-
+                android:text="Transport Mode" android:textSize="13sp" android:textColor="@color/text_secondary"
+                android:layout_marginBottom="4dp" />
             <Spinner android:id="@+id/spinner_transport_mode"
                 android:layout_width="match_parent" android:layout_height="56dp"
-                android:background="@android:drawable/btn_dropdown"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"
+                android:background="@android:drawable/btn_dropdown" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Available capacity (kg)"
-                style="@style/GtwInput" android:layout_marginBottom="12dp">
+                android:hint="Seats Available" style="@style/GtwInput" android:layout_marginBottom="12dp">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_capacity_kg"
+                    android:id="@+id/et_seats_available"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="numberDecimal" />
+                    android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Notes (optional)"
-                style="@style/GtwInput" android:layout_marginBottom="24dp">
+                android:hint="Notes (optional)" style="@style/GtwInput" android:layout_marginBottom="20dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_notes"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -120,9 +89,8 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_post_trip"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Post Trip"
-                android:textSize="16sp"
-                style="@style/Btn.Primary" />
+                android:text="Post Trip" android:textSize="16sp"
+                style="@style/Btn.Action" />
 
         </LinearLayout>
     </ScrollView>

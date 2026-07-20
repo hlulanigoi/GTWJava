@@ -10,9 +10,9 @@
         android:label="Home" />
 
     <fragment
-        android:id="@+id/nav_parcels"
-        android:name="com.goinghatway.app.fragments.ParcelsFragment"
-        android:label="My Parcels" />
+        android:id="@+id/nav_rides"
+        android:name="com.goinghatway.app.fragments.RidesFragment"
+        android:label="My Rides" />
 
     <fragment
         android:id="@+id/nav_trips"

@@ -13,11 +13,11 @@ public class Trip {
     @SerializedName("id")
     private String id;
 
-    @SerializedName("traveler_id")
-    private String travelerId;
+    @SerializedName("driver_id")
+    private String driverId;
 
-    @SerializedName("traveler")
-    private User traveler;
+    @SerializedName("driver")
+    private User driver;
 
     @SerializedName("origin_address")
     private String originAddress;
@@ -46,17 +46,17 @@ public class Trip {
     @SerializedName("transport_mode")
     private String transportMode; // CAR, BUS, TRAIN, WALK, OTHER
 
-    @SerializedName("available_capacity_kg")
-    private double availableCapacityKg;
+    @SerializedName("seats_available")
+    private int seatsAvailable;
 
     @SerializedName("waypoints")
     private List<RoutePoint> waypoints;
 
-    @SerializedName("matched_parcels")
-    private List<Parcel> matchedParcels;
+    @SerializedName("matched_rides")
+    private List<Ride> matchedRides;
 
-    @SerializedName("matched_parcel_count")
-    private int matchedParcelCount;
+    @SerializedName("matched_ride_count")
+    private int matchedRideCount;
 
     @SerializedName("status")
     private String status;
@@ -72,11 +72,11 @@ public class Trip {
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
-    public String getTravelerId() { return travelerId; }
-    public void setTravelerId(String travelerId) { this.travelerId = travelerId; }
+    public String getDriverId() { return driverId; }
+    public void setDriverId(String driverId) { this.driverId = driverId; }
 
-    public User getTraveler() { return traveler; }
-    public void setTraveler(User traveler) { this.traveler = traveler; }
+    public User getDriver() { return driver; }
+    public void setDriver(User driver) { this.driver = driver; }
 
     public String getOriginAddress() { return originAddress; }
     public void setOriginAddress(String originAddress) { this.originAddress = originAddress; }
@@ -105,17 +105,17 @@ public class Trip {
     public String getTransportMode() { return transportMode; }
     public void setTransportMode(String transportMode) { this.transportMode = transportMode; }
 
-    public double getAvailableCapacityKg() { return availableCapacityKg; }
-    public void setAvailableCapacityKg(double availableCapacityKg) { this.availableCapacityKg = availableCapacityKg; }
+    public int getSeatsAvailable() { return seatsAvailable; }
+    public void setSeatsAvailable(int seatsAvailable) { this.seatsAvailable = seatsAvailable; }
 
     public List<RoutePoint> getWaypoints() { return waypoints; }
     public void setWaypoints(List<RoutePoint> waypoints) { this.waypoints = waypoints; }
 
-    public List<Parcel> getMatchedParcels() { return matchedParcels; }
-    public void setMatchedParcels(List<Parcel> matchedParcels) { this.matchedParcels = matchedParcels; }
+    public List<Ride> getMatchedRides() { return matchedRides; }
+    public void setMatchedRides(List<Ride> matchedRides) { this.matchedRides = matchedRides; }
 
-    public int getMatchedParcelCount() { return matchedParcelCount; }
-    public void setMatchedParcelCount(int matchedParcelCount) { this.matchedParcelCount = matchedParcelCount; }
+    public int getMatchedRideCount() { return matchedRideCount; }
+    public void setMatchedRideCount(int matchedRideCount) { this.matchedRideCount = matchedRideCount; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

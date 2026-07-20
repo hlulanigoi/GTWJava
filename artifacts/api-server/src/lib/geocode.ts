@@ -16,7 +16,7 @@ export async function geocodeAddress(address: string): Promise<GeocodeResult> {
 
   const res = await fetch(url, {
     headers: {
-      "User-Agent": "GoingThatWay/1.0 (parcel-delivery-app)",
+      "User-Agent": "GoingThatWay/1.0 (taxi-booking-app)",
       Accept: "application/json",
     },
   });

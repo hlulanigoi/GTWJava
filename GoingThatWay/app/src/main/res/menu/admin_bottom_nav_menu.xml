@@ -12,9 +12,14 @@
         android:title="Users" />
 
     <item
-        android:id="@+id/admin_parcels"
+        android:id="@+id/admin_rides"
         android:icon="@android:drawable/ic_menu_send"
-        android:title="Parcels" />
+        android:title="Rides" />
+
+    <item
+        android:id="@+id/admin_drivers"
+        android:icon="@android:drawable/ic_menu_directions"
+        android:title="Drivers" />
 
     <item
         android:id="@+id/admin_payments"

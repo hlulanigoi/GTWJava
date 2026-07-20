@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.goinghatway.app.activities.ApplyDriverActivity;
 import com.goinghatway.app.activities.LoginActivity;
 import com.goinghatway.app.api.ApiClient;
 import com.goinghatway.app.databinding.FragmentProfileBinding;
@@ -39,6 +40,8 @@ public class ProfileFragment extends Fragment {
         loadProfile();
 
         binding.btnLogout.setOnClickListener(v -> logout());
+        binding.btnApplyDriver.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), ApplyDriverActivity.class)));
     }
 
     private void loadProfile() {
@@ -50,9 +53,23 @@ public class ProfileFragment extends Fragment {
                 binding.tvPhone.setText(user.getPhone());
                 binding.tvRating.setText(String.format(Locale.getDefault(),
                         "%.1f ★", user.getRating()));
-                binding.tvDeliveries.setText(String.valueOf(user.getTotalDeliveries()));
-                binding.tvParcelsSent.setText(String.valueOf(user.getTotalParcelsSent()));
+                binding.tvRidesDriven.setText(String.valueOf(user.getTotalRidesDriven()));
+                binding.tvRidesTaken.setText(String.valueOf(user.getTotalRidesTaken()));
                 binding.tvTicketsOwned.setText(String.valueOf(user.getTicketsOwned()));
+
+                // Show driver status
+                if (user.isApprovedDriver()) {
+                    binding.tvDriverStatus.setText("✓ Approved Driver");
+                    binding.tvDriverStatus.setVisibility(View.VISIBLE);
+                    binding.btnApplyDriver.setVisibility(View.GONE);
+                } else if (user.getLicenseNumber() != null && !user.getLicenseNumber().isEmpty()) {
+                    binding.tvDriverStatus.setText("Driver application pending review");
+                    binding.tvDriverStatus.setVisibility(View.VISIBLE);
+                    binding.btnApplyDriver.setVisibility(View.GONE);
+                } else {
+                    binding.tvDriverStatus.setVisibility(View.GONE);
+                    binding.btnApplyDriver.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

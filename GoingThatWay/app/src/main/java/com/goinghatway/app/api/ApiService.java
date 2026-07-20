@@ -3,8 +3,8 @@ package com.goinghatway.app.api;
 import com.goinghatway.app.api.responses.ApiResponse;
 import com.goinghatway.app.api.responses.AuthResponse;
 import com.goinghatway.app.api.responses.PaginatedResponse;
-import com.goinghatway.app.models.Match;
-import com.goinghatway.app.models.Parcel;
+import com.goinghatway.app.models.Booking;
+import com.goinghatway.app.models.Ride;
 import com.goinghatway.app.models.Ticket;
 import com.goinghatway.app.models.Trip;
 import com.goinghatway.app.models.User;
@@ -37,36 +37,40 @@ public interface ApiService {
     @GET("auth/me")
     Call<ApiResponse<User>> getMe();
 
-    // ─── Parcels ─────────────────────────────────────────────────────────────
+    // ─── Rides ─────────────────────────────────────────────────────────────
 
-    /** List all available (unmatched) parcels — for travelers to browse */
-    @GET("parcels")
-    Call<ApiResponse<PaginatedResponse<Parcel>>> getParcels(
-            @Query("page") int page,
-            @Query("status") String status,
+    /** List available ride requests near a location */
+    @GET("rides")
+    Call<ApiResponse<PaginatedResponse<Ride>>> getRides(
             @Query("lat") double lat,
             @Query("lng") double lng,
-            @Query("radius_km") double radiusKm
+            @Query("radius_km") double radiusKm,
+            @Query("status") String status
     );
 
-    /** My parcels (as sender) */
-    @GET("parcels/my")
-    Call<ApiResponse<List<Parcel>>> getMyParcels();
+    /** My rides (as rider) */
+    @GET("rides/my")
+    Call<ApiResponse<List<Ride>>> getMyRides();
 
-    @GET("parcels/{id}")
-    Call<ApiResponse<Parcel>> getParcel(@Path("id") String id);
+    @GET("rides/{id}")
+    Call<ApiResponse<Ride>> getRide(@Path("id") String id);
 
-    @POST("parcels")
-    Call<ApiResponse<Parcel>> createParcel(@Body Map<String, Object> body);
+    /** Create a scheduled ride request */
+    @POST("rides")
+    Call<ApiResponse<Ride>> createRide(@Body Map<String, Object> body);
 
-    @PATCH("parcels/{id}/status")
-    Call<ApiResponse<Parcel>> updateParcelStatus(
+    /** Create an on-demand ride (GPS pickup) */
+    @POST("rides/on-demand")
+    Call<ApiResponse<Ride>> createOnDemandRide(@Body Map<String, Object> body);
+
+    @PATCH("rides/{id}/status")
+    Call<ApiResponse<Ride>> updateRideStatus(
             @Path("id") String id,
             @Body Map<String, String> body
     );
 
-    @DELETE("parcels/{id}")
-    Call<ApiResponse<Void>> deleteParcel(@Path("id") String id);
+    @DELETE("rides/{id}")
+    Call<ApiResponse<Void>> deleteRide(@Path("id") String id);
 
     // ─── Trips ────────────────────────────────────────────────────────────────
 
@@ -76,7 +80,7 @@ public interface ApiService {
             @Query("status") String status
     );
 
-    /** My trips (as traveler) */
+    /** My trips (as driver) */
     @GET("trips/my")
     Call<ApiResponse<List<Trip>>> getMyTrips();
 
@@ -92,26 +96,26 @@ public interface ApiService {
             @Body Map<String, String> body
     );
 
-    /** Auto-match parcels to a trip based on route proximity */
+    /** Auto-match rides to a trip based on route proximity */
     @POST("trips/{id}/match")
-    Call<ApiResponse<List<Match>>> matchParcelsToTrip(@Path("id") String id);
+    Call<ApiResponse<List<Booking>>> matchRidesToTrip(@Path("id") String id);
 
-    // ─── Matches ──────────────────────────────────────────────────────────────
+    // ─── Bookings ─────────────────────────────────────────────────────────────
 
-    @GET("matches")
-    Call<ApiResponse<List<Match>>> getMyMatches();
+    @GET("bookings")
+    Call<ApiResponse<List<Booking>>> getMyBookings();
 
-    @POST("matches/{id}/accept")
-    Call<ApiResponse<Match>> acceptMatch(@Path("id") String id);
+    @POST("bookings/{id}/accept")
+    Call<ApiResponse<Booking>> acceptBooking(@Path("id") String id);
 
-    @POST("matches/{id}/reject")
-    Call<ApiResponse<Match>> rejectMatch(@Path("id") String id);
+    @POST("bookings/{id}/reject")
+    Call<ApiResponse<Booking>> rejectBooking(@Path("id") String id);
 
-    @POST("matches/{id}/collect")
-    Call<ApiResponse<Match>> markCollected(@Path("id") String id);
+    @POST("bookings/{id}/pickup")
+    Call<ApiResponse<Booking>> markPickedUp(@Path("id") String id);
 
-    @POST("matches/{id}/deliver")
-    Call<ApiResponse<Match>> markDelivered(@Path("id") String id);
+    @POST("bookings/{id}/complete")
+    Call<ApiResponse<Booking>> markCompleted(@Path("id") String id);
 
     // ─── Tickets ──────────────────────────────────────────────────────────────
 
@@ -126,9 +130,9 @@ public interface ApiService {
 
     // ─── Payments ─────────────────────────────────────────────────────────────
 
-    /** Initiate a bank payment for a new parcel; returns payment reference */
+    /** Initiate a bank payment for a new ride; returns payment reference */
     @POST("payments/initiate")
-    Call<ApiResponse<Map<String, String>>> initiateParcelPayment(@Body Map<String, Object> body);
+    Call<ApiResponse<Map<String, String>>> initiateRidePayment(@Body Map<String, Object> body);
 
     /** Verify payment after bank transfer */
     @POST("payments/verify")
@@ -141,4 +145,8 @@ public interface ApiService {
 
     @PATCH("users/profile")
     Call<ApiResponse<User>> updateProfile(@Body Map<String, String> body);
+
+    /** Apply to become an approved driver */
+    @POST("users/me/apply-driver")
+    Call<ApiResponse<User>> applyAsDriver(@Body Map<String, String> body);
 }

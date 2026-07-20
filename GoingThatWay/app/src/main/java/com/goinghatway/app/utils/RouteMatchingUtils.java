@@ -1,6 +1,6 @@
 package com.goinghatway.app.utils;
 
-import com.goinghatway.app.models.Parcel;
+import com.goinghatway.app.models.Ride;
 import com.goinghatway.app.models.RoutePoint;
 import com.goinghatway.app.models.Trip;
 
@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Utility class for matching parcels to trips based on route proximity.
+ * Utility class for matching ride requests to trips based on route proximity.
  *
  * Algorithm:
- * 1. Check if the parcel pickup is within MAX_DETOUR_KM of the trip's route.
- * 2. Check if the parcel destination is AT or BEFORE the trip's destination
- *    (parcel destination must be reachable before the traveler arrives at theirs).
+ * 1. Check if the ride pickup is within MAX_DETOUR_KM of the trip's route.
+ * 2. Check if the ride destination is AT or BEFORE the trip's destination
+ *    (ride destination must be reachable before the driver arrives at theirs).
  * 3. Score the match — exact-route matches score 1.0, slight detours score lower.
  */
 public class RouteMatchingUtils {
@@ -21,43 +21,43 @@ public class RouteMatchingUtils {
     private static final double EARTH_RADIUS_KM = 6371.0;
 
     /**
-     * Returns true if the parcel can potentially be carried on this trip.
+     * Returns true if the ride request can potentially be served on this trip.
      */
-    public static boolean isMatch(Parcel parcel, Trip trip) {
+    public static boolean isMatch(Ride ride, Trip trip) {
         if (trip.getWaypoints() == null || trip.getWaypoints().isEmpty()) {
             // No waypoints — just check straight-line proximity
             return isPointNearSegment(
-                    parcel.getPickupLat(), parcel.getPickupLng(),
+                    ride.getPickupLat(), ride.getPickupLng(),
                     trip.getOriginLat(), trip.getOriginLng(),
                     trip.getDestinationLat(), trip.getDestinationLng(),
                     Constants.ROUTE_BUFFER_KM
-            ) && isDestinationReachable(parcel, trip);
+            ) && isDestinationReachable(ride, trip);
         }
 
         List<RoutePoint> fullRoute = buildFullRoute(trip);
-        return isPickupAlongRoute(parcel, fullRoute) && isDestinationReachable(parcel, trip);
+        return isPickupAlongRoute(ride, fullRoute) && isDestinationReachable(ride, trip);
     }
 
     /**
      * Score from 0.0 (no match) to 1.0 (perfect along-route match).
      */
-    public static double scoreMatch(Parcel parcel, Trip trip) {
-        if (!isMatch(parcel, trip)) return 0.0;
+    public static double scoreMatch(Ride ride, Trip trip) {
+        if (!isMatch(ride, trip)) return 0.0;
 
-        double detourKm = estimateDetourKm(parcel, trip);
+        double detourKm = estimateDetourKm(ride, trip);
         if (detourKm <= 0.5) return 1.0;
         if (detourKm >= Constants.MAX_DETOUR_KM) return 0.1;
         return 1.0 - (detourKm / Constants.MAX_DETOUR_KM) * 0.9;
     }
 
     /**
-     * Filter a list of parcels to only those that match a given trip.
+     * Filter a list of rides to only those that match a given trip.
      */
-    public static List<Parcel> filterMatchingParcels(List<Parcel> parcels, Trip trip) {
-        List<Parcel> matches = new ArrayList<>();
-        for (Parcel parcel : parcels) {
-            if (isMatch(parcel, trip)) {
-                matches.add(parcel);
+    public static List<Ride> filterMatchingRides(List<Ride> rides, Trip trip) {
+        List<Ride> matches = new ArrayList<>();
+        for (Ride ride : rides) {
+            if (isMatch(ride, trip)) {
+                matches.add(ride);
             }
         }
         return matches;
@@ -65,12 +65,12 @@ public class RouteMatchingUtils {
 
     // ─── Private helpers ─────────────────────────────────────────────────────
 
-    private static boolean isPickupAlongRoute(Parcel parcel, List<RoutePoint> route) {
+    private static boolean isPickupAlongRoute(Ride ride, List<RoutePoint> route) {
         for (int i = 0; i < route.size() - 1; i++) {
             RoutePoint a = route.get(i);
             RoutePoint b = route.get(i + 1);
             if (isPointNearSegment(
-                    parcel.getPickupLat(), parcel.getPickupLng(),
+                    ride.getPickupLat(), ride.getPickupLng(),
                     a.getLat(), a.getLng(),
                     b.getLat(), b.getLng(),
                     Constants.ROUTE_BUFFER_KM)) {
@@ -81,12 +81,12 @@ public class RouteMatchingUtils {
     }
 
     /**
-     * Parcel destination must be within ROUTE_BUFFER_KM of any point on the
+     * Ride destination must be within ROUTE_BUFFER_KM of any point on the
      * route AFTER the pickup segment, or equal to the trip's destination.
      */
-    private static boolean isDestinationReachable(Parcel parcel, Trip trip) {
+    private static boolean isDestinationReachable(Ride ride, Trip trip) {
         double distToTripDest = haversineKm(
-                parcel.getDestinationLat(), parcel.getDestinationLng(),
+                ride.getDestinationLat(), ride.getDestinationLng(),
                 trip.getDestinationLat(), trip.getDestinationLng()
         );
         if (distToTripDest <= Constants.ROUTE_BUFFER_KM) return true;
@@ -94,7 +94,7 @@ public class RouteMatchingUtils {
         if (trip.getWaypoints() == null) return false;
         List<RoutePoint> fullRoute = buildFullRoute(trip);
         for (RoutePoint point : fullRoute) {
-            if (haversineKm(parcel.getDestinationLat(), parcel.getDestinationLng(),
+            if (haversineKm(ride.getDestinationLat(), ride.getDestinationLng(),
                     point.getLat(), point.getLng()) <= Constants.ROUTE_BUFFER_KM) {
                 return true;
             }
@@ -102,13 +102,12 @@ public class RouteMatchingUtils {
         return false;
     }
 
-    private static double estimateDetourKm(Parcel parcel, Trip trip) {
-        // Rough estimate: distance from closest route point to pickup
+    private static double estimateDetourKm(Ride ride, Trip trip) {
         List<RoutePoint> fullRoute = buildFullRoute(trip);
         double minDist = Double.MAX_VALUE;
         for (RoutePoint point : fullRoute) {
             double d = haversineKm(
-                    parcel.getPickupLat(), parcel.getPickupLng(),
+                    ride.getPickupLat(), ride.getPickupLng(),
                     point.getLat(), point.getLng()
             );
             if (d < minDist) minDist = d;

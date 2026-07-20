@@ -11,7 +11,7 @@ const router: IRouter = Router();
 
 const initiateSchema = z.object({
   amount: z.coerce.number().positive(),
-  purpose: z.enum(["PARCEL", "TICKET"]),
+  purpose: z.enum(["RIDE", "TICKET"]),
 });
 
 /** Server-generates the bank-transfer reference (replaces the old client-side "GTW-" + timestamp). */

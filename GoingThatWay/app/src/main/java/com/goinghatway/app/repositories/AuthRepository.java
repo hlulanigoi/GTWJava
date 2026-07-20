@@ -119,4 +119,35 @@ public class AuthRepository {
         });
         return result;
     }
+
+    public MutableLiveData<ApiResponse<User>> applyAsDriver(
+            String licenseNumber, String vehiclePlate, String vehicleModel) {
+        MutableLiveData<ApiResponse<User>> result = new MutableLiveData<>();
+        Map<String, String> body = new HashMap<>();
+        body.put("license_number", licenseNumber);
+        body.put("vehicle_plate", vehiclePlate);
+        body.put("vehicle_model", vehicleModel);
+        api.applyAsDriver(body).enqueue(new Callback<ApiResponse<User>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<User>> call,
+                                   Response<ApiResponse<User>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    result.postValue(response.body());
+                } else {
+                    ApiResponse<User> err = new ApiResponse<>();
+                    err.setSuccess(false);
+                    err.setError("Application failed. Please try again.");
+                    result.postValue(err);
+                }
+            }
+            @Override
+            public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
+                ApiResponse<User> err = new ApiResponse<>();
+                err.setSuccess(false);
+                err.setError("Network error: " + t.getMessage());
+                result.postValue(err);
+            }
+        });
+        return result;
+    }
 }

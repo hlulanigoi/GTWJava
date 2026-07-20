@@ -48,28 +48,32 @@ public class PostTripActivity extends AppCompatActivity {
     private void postTrip() {
         if (!validateForm()) return;
 
-        String originAddr   = binding.etOriginAddress.getText().toString().trim();
-        String destAddr     = binding.etDestinationAddress.getText().toString().trim();
-        String departure    = binding.etDepartureTime.getText().toString().trim();
-        String arrival      = binding.etArrivalTime.getText().toString().trim();
-        String transportMode= binding.spinnerTransportMode.getSelectedItem().toString();
-        double capacity     = Double.parseDouble(binding.etCapacityKg.getText().toString().trim());
-        String notes        = binding.etNotes.getText().toString().trim();
+        String originAddr    = binding.etOriginAddress.getText().toString().trim();
+        String destAddr      = binding.etDestinationAddress.getText().toString().trim();
+        String departure     = binding.etDepartureTime.getText().toString().trim();
+        String arrival       = binding.etArrivalTime.getText().toString().trim();
+        String transportMode = binding.spinnerTransportMode.getSelectedItem().toString();
+        int    seatsAvailable= Integer.parseInt(binding.etSeatsAvailable.getText().toString().trim());
+        String notes         = binding.etNotes.getText().toString().trim();
 
         setLoading(true);
 
         viewModel.createTrip(originAddr, originLat, originLng,
                 destAddr, destLat, destLng,
-                departure, arrival, transportMode, capacity, notes)
+                departure, arrival, transportMode, seatsAvailable, notes)
                 .observe(this, response -> {
                     setLoading(false);
                     if (response != null && response.isSuccess()) {
-                        Toast.makeText(this, "Trip posted! We will find matching parcels.",
+                        Toast.makeText(this, "Trip posted! We will find matching ride requests.",
                                 Toast.LENGTH_LONG).show();
                         setResult(RESULT_OK);
                         finish();
                     } else {
                         String msg = response != null ? response.getError() : "Failed to post trip";
+                        // Surface 403 "Only approved association drivers" clearly
+                        if (msg != null && msg.contains("403")) {
+                            msg = "Only approved association drivers can post trips. Please apply as a driver first.";
+                        }
                         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                     }
                 });
@@ -86,8 +90,8 @@ public class PostTripActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(binding.etDepartureTime.getText())) {
             binding.etDepartureTime.setError("Required"); valid = false;
         }
-        if (TextUtils.isEmpty(binding.etCapacityKg.getText())) {
-            binding.etCapacityKg.setError("Required"); valid = false;
+        if (TextUtils.isEmpty(binding.etSeatsAvailable.getText())) {
+            binding.etSeatsAvailable.setError("Required"); valid = false;
         }
         return valid;
     }

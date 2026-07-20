@@ -10,7 +10,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { usersTable } from "./users";
 
-export const paymentTypeEnum = pgEnum("payment_type", ["PARCEL", "TICKET"]);
+export const paymentTypeEnum = pgEnum("payment_type", ["RIDE", "TICKET"]);
 export const paymentStatusEnum = pgEnum("payment_status", [
   "PENDING",
   "VERIFIED",

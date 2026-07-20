@@ -15,20 +15,22 @@
 
     <!-- Navigation -->
     <string name="nav_home">Home</string>
-    <string name="nav_parcels">Parcels</string>
+    <string name="nav_rides">Rides</string>
     <string name="nav_trips">Trips</string>
     <string name="nav_tickets">Tickets</string>
     <string name="nav_profile">Profile</string>
 
-    <!-- Parcels -->
-    <string name="create_parcel">Send a Parcel</string>
-    <string name="parcel_description">What are you sending?</string>
+    <!-- Rides -->
+    <string name="book_a_ride">Book a Ride</string>
+    <string name="request_ride_now">Request Ride Now</string>
+    <string name="ride_notes">Notes (optional)</string>
     <string name="pickup_address">Pickup Address</string>
     <string name="destination_address">Destination Address</string>
-    <string name="weight_kg">Weight (kg)</string>
-    <string name="special_instructions">Special Instructions (optional)</string>
+    <string name="passenger_count">Passengers</string>
+    <string name="luggage_size">Luggage Size</string>
     <string name="proceed_to_payment">Proceed to Payment</string>
-    <string name="no_parcels">No parcels yet.\nTap + to send your first parcel!</string>
+    <string name="no_rides">No rides yet.\nTap + to book your first ride!</string>
+    <string name="nearby_ride_requests">Nearby Ride Requests</string>
 
     <!-- Trips -->
     <string name="post_trip">Post My Trip</string>
@@ -36,15 +38,15 @@
     <string name="departure_time">Departure Date &amp; Time</string>
     <string name="arrival_time">Arrival Date &amp; Time (optional)</string>
     <string name="transport_mode">How are you travelling?</string>
-    <string name="capacity_kg">Available capacity (kg)</string>
+    <string name="seats_available">Seats Available</string>
     <string name="notes">Notes (optional)</string>
-    <string name="find_parcels">Find Matching Parcels</string>
+    <string name="find_rides">Find Matching Ride Requests</string>
     <string name="no_trips">No trips yet.\nTap + to post your first trip!</string>
 
     <!-- Tickets -->
-    <string name="buy_ticket">Buy a Carrier Ticket</string>
-    <string name="ticket_info">You need a ticket to collect and carry parcels on your trips.</string>
-    <string name="no_tickets">No tickets yet. Buy one to start carrying parcels!</string>
+    <string name="buy_ticket">Buy an Association Ticket</string>
+    <string name="ticket_info">You need an association ticket to drive passengers on your trips.</string>
+    <string name="no_tickets">No tickets yet. Buy one to start accepting ride requests!</string>
 
     <!-- Payment -->
     <string name="payment_details">Bank Transfer Details</string>
@@ -52,16 +54,23 @@
     <string name="your_payment_reference">Your Payment Reference</string>
     <string name="confirm_payment">I Have Paid — Confirm</string>
 
+    <!-- Driver application -->
+    <string name="apply_driver">Apply to be a Driver</string>
+    <string name="driver_application_pending">Driver application pending review</string>
+    <string name="approved_driver">✓ Approved Driver</string>
+
     <!-- Admin -->
     <string name="admin_panel">Admin Panel</string>
     <string name="admin_dashboard">Dashboard</string>
     <string name="admin_users">Users</string>
-    <string name="admin_parcels">Parcels</string>
+    <string name="admin_rides">Rides</string>
+    <string name="admin_drivers">Drivers</string>
     <string name="admin_payments">Payments</string>
     <string name="admin_verify">Verify</string>
     <string name="admin_reject">Reject</string>
     <string name="admin_activate">Activate</string>
     <string name="admin_deactivate">Deactivate</string>
+    <string name="admin_approve">Approve</string>
 
     <!-- General -->
     <string name="loading">Loading…</string>

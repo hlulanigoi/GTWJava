@@ -21,10 +21,14 @@ export const usersTable = pgTable("users", {
   passwordHash: text("password_hash").notNull(),
   role: userRoleEnum("role").notNull().default("USER"),
   rating: numeric("rating", { precision: 3, scale: 2 }).notNull().default("5.00"),
-  totalDeliveries: integer("total_deliveries").notNull().default(0),
-  totalParcelsSent: integer("total_parcels_sent").notNull().default(0),
+  totalRidesDriven: integer("total_rides_driven").notNull().default(0),
+  totalRidesTaken: integer("total_rides_taken").notNull().default(0),
   ticketsOwned: integer("tickets_owned").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
+  isApprovedDriver: boolean("is_approved_driver").notNull().default(false),
+  licenseNumber: text("license_number"),
+  vehiclePlate: text("vehicle_plate"),
+  vehicleModel: text("vehicle_model"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 });
@@ -33,10 +37,11 @@ export const insertUserSchema = createInsertSchema(usersTable).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
-  totalDeliveries: true,
-  totalParcelsSent: true,
+  totalRidesDriven: true,
+  totalRidesTaken: true,
   ticketsOwned: true,
   isActive: true,
+  isApprovedDriver: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
