@@ -1,0 +1,81 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    namespace 'com.goinghatway.shared'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 24
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    // AndroidX core
+    api 'androidx.appcompat:appcompat:1.6.1'
+    api 'com.google.android.material:material:1.10.0'
+    api 'androidx.constraintlayout:constraintlayout:2.1.4'
+    api 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    // Navigation Component
+    api 'androidx.navigation:navigation-fragment:2.7.4'
+    api 'androidx.navigation:navigation-ui:2.7.4'
+
+    // Lifecycle / ViewModel / LiveData
+    api 'androidx.lifecycle:lifecycle-viewmodel:2.6.2'
+    api 'androidx.lifecycle:lifecycle-livedata:2.6.2'
+    api 'androidx.lifecycle:lifecycle-runtime:2.6.2'
+
+    // Room (local database)
+    api 'androidx.room:room-runtime:2.6.0'
+    annotationProcessor 'androidx.room:room-compiler:2.6.0'
+
+    // Retrofit + OkHttp (networking)
+    api 'com.squareup.retrofit2:retrofit:2.9.0'
+    api 'com.squareup.retrofit2:converter-gson:2.9.0'
+    api 'com.squareup.okhttp3:okhttp:4.11.0'
+    api 'com.squareup.okhttp3:logging-interceptor:4.11.0'
+
+    // Gson
+    api 'com.google.code.gson:gson:2.10.1'
+
+    // OpenStreetMap via osmdroid (NO API key needed)
+    api 'org.osmdroid:osmdroid-android:6.1.17'
+
+    // Location
+    api 'com.google.android.gms:play-services-location:21.0.1'
+
+    // Glide (image loading)
+    api 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
+
+    // CircleImageView
+    api 'de.hdodenhof:circleimageview:3.1.0'
+
+    // MPAndroidChart
+    api 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // Test
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
