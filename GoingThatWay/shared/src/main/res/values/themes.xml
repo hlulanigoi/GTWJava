@@ -7,84 +7,90 @@
         <item name="colorAccent">@color/accent</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="android:statusBarColor">@color/primary_dark</item>
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <style name="Theme.GoingThatWay.Splash" parent="Theme.GoingThatWay">
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@color/primary_dark</item>
+        <item name="android:windowBackground">@color/primary</item>
     </style>
 
-    <!-- Toolbar -->
+    <!-- Modern Toolbar -->
     <style name="GtwToolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">@color/primary</item>
         <item name="titleTextColor">@color/white</item>
         <item name="navigationIconTint">@color/white</item>
+        <item name="titleTextAppearance">@style/TextAppearance.MaterialComponents.Headline6</item>
     </style>
 
-    <!-- Green button -->
+    <!-- Primary Action Button (Fintech Style) -->
     <style name="Btn.Primary" parent="Widget.MaterialComponents.Button">
         <item name="android:backgroundTint">@color/primary</item>
         <item name="android:textColor">@color/white</item>
-        <item name="cornerRadius">10dp</item>
-        <item name="android:paddingTop">14dp</item>
-        <item name="android:paddingBottom">14dp</item>
-        <item name="android:textSize">15sp</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
     </style>
 
-    <!-- Amber action button -->
+    <!-- Accent Action Button -->
     <style name="Btn.Action" parent="Widget.MaterialComponents.Button">
         <item name="android:backgroundTint">@color/accent</item>
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="cornerRadius">10dp</item>
-        <item name="android:paddingTop">14dp</item>
-        <item name="android:paddingBottom">14dp</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
     </style>
 
-    <!-- Outlined button -->
+    <!-- Modern Outlined Button -->
     <style name="Btn.Outline" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeColor">@color/primary</item>
         <item name="android:textColor">@color/primary</item>
-        <item name="cornerRadius">10dp</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
     </style>
 
-    <!-- Card -->
+    <!-- Bento Style Card -->
     <style name="GtwCard" parent="Widget.MaterialComponents.CardView">
-        <item name="cardCornerRadius">12dp</item>
-        <item name="cardElevation">3dp</item>
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">0dp</item>
         <item name="contentPadding">0dp</item>
         <item name="strokeColor">@color/card_stroke</item>
         <item name="strokeWidth">1dp</item>
+        <item name="cardBackgroundColor">@color/white</item>
     </style>
 
-    <!-- Input -->
+    <!-- Modern Rounded Input -->
     <style name="GtwInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxCornerRadiusBottomEnd">10dp</item>
-        <item name="boxCornerRadiusBottomStart">10dp</item>
-        <item name="boxCornerRadiusTopEnd">10dp</item>
-        <item name="boxCornerRadiusTopStart">10dp</item>
-        <item name="boxStrokeColor">@color/divider</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="boxStrokeColor">@color/primary</item>
         <item name="boxBackgroundColor">@color/input_bg</item>
         <item name="android:textColorHint">@color/text_secondary</item>
+        <item name="hintTextColor">@color/primary</item>
     </style>
 
-    <!-- Stat chip -->
-    <style name="StatChip">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">4dp</item>
+    <!-- Circular Icon Container (for dashboards) -->
+    <style name="IconContainer">
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">56dp</item>
         <item name="android:padding">12dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:background">@drawable/bg_stat_chip</item>
+        <item name="android:background">@drawable/bg_circle_icon</item>
+    </style>
+
+    <style name="CircleImage" parent="">
+        <item name="cornerSize">50%</item>
     </style>
 
 </resources>

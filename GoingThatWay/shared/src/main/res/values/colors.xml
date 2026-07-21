@@ -1,40 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand — matching SA eRide green palette -->
-    <color name="primary">#2E7D32</color>
-    <color name="primary_dark">#1B5E20</color>
-    <color name="primary_light">#E8F5E9</color>
-    <color name="primary_medium">#4CAF50</color>
-    <color name="accent">#FFC107</color>
-    <color name="accent_dark">#F9A825</color>
+    <!--
+      GTW Premium Fintech Palette (2024 Refresh)
+      Inspired by the clean, deep blue and white aesthetic provided in the reference.
+    -->
 
-    <!-- Status colors -->
-    <color name="status_pending">#FF9800</color>
-    <color name="status_matched">#1565C0</color>
-    <color name="status_collected">#6A1B9A</color>
-    <color name="status_delivered">#2E7D32</color>
-    <color name="status_cancelled">#C62828</color>
-    <color name="status_active">#2E7D32</color>
+    <!-- Brand Colors -->
+    <color name="primary">#0D47A1</color> <!-- Deep Navy Blue -->
+    <color name="primary_dark">#002171</color>
+    <color name="primary_light">#5472D3</color>
 
-    <!-- UI -->
+    <color name="accent">#00B0FF</color> <!-- Vibrant Sky Blue -->
+    <color name="accent_dark">#0081CB</color>
+    <color name="accent_light">#E1F5FE</color>
+
+    <!-- Semantic Colors (Status) -->
+    <color name="status_pending">#FF9800</color> <!-- Orange -->
+    <color name="status_matched">#2979FF</color> <!-- Blue -->
+    <color name="status_collected">#9C27B0</color> <!-- Purple -->
+    <color name="status_delivered">#4CAF50</color> <!-- Green -->
+    <color name="status_cancelled">#F44336</color> <!-- Red -->
+    <color name="status_active">#4CAF50</color>
+
+    <!-- Backgrounds and Surfaces -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="background">#F4F6F8</color>
+    <color name="background">#F5F7FA</color> <!-- Soft Greyish Blue Background -->
     <color name="surface">#FFFFFF</color>
-    <color name="surface_elevated">#F0F0F0</color><!-- overridden to dark in driver module -->
-    <color name="text_primary">#1A1A1A</color>
-    <color name="text_secondary">#6B7280</color>
-    <color name="text_on_primary">#FFFFFF</color>
-    <color name="divider">#E0E0E0</color>
-    <color name="card_stroke">#E0E0E0</color>
-    <color name="input_bg">#F9FAFB</color>
-    <color name="toolbar_bg">#2E7D32</color>
+    <color name="surface_variant">#F1F4F9</color>
+    <color name="surface_elevated">#F8F9FA</color>
 
-    <!-- Admin -->
-    <color name="admin_primary">#1B5E20</color>
-    <color name="admin_accent">#FF6F00</color>
-    <color name="stat_blue">#1565C0</color>
-    <color name="stat_purple">#6A1B9A</color>
-    <color name="stat_green">#2E7D32</color>
-    <color name="stat_orange">#E65100</color>
+    <!-- Typography -->
+    <color name="text_primary">#1A1C1E</color>
+    <color name="text_secondary">#6C757D</color>
+    <color name="text_tertiary">#ADB5BD</color>
+    <color name="text_hint">#ADB5BD</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_accent">#FFFFFF</color>
+
+    <!-- Decorative/Functional -->
+    <color name="divider">#E9ECEF</color>
+    <color name="card_stroke">#DEE2E6</color>
+    <color name="input_bg">#F8F9FA</color>
+    <color name="toolbar_bg">#0D47A1</color>
+
+    <!-- Icon Palette / Admin Stats -->
+    <color name="icon_blue">#E3F2FD</color>
+    <color name="icon_green">#E8F5E9</color>
+    <color name="icon_orange">#FFF3E0</color>
+    <color name="icon_red">#FFEBEE</color>
+    <color name="icon_purple">#F3E5F5</color>
+
+    <color name="stat_blue">#2979FF</color>
+    <color name="stat_purple">#9C27B0</color>
+    <color name="stat_green">#4CAF50</color>
+    <color name="stat_orange">#FF9800</color>
 </resources>

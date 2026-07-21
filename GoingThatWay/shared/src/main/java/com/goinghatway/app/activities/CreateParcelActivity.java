@@ -1,6 +1,7 @@
 package com.goinghatway.app.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,10 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.goinghatway.app.R;
 import com.goinghatway.app.databinding.ActivityCreateParcelBinding;
 import com.goinghatway.app.utils.Constants;
 import com.goinghatway.app.utils.LocationPickerHelper;
+import com.goinghatway.app.utils.NominatimAutocompleteHelper;
 import com.goinghatway.app.utils.OsmMapUtils;
 import com.goinghatway.app.utils.PriceCalculator;
 import com.goinghatway.app.viewmodels.ParcelViewModel;
@@ -40,6 +44,9 @@ public class CreateParcelActivity extends AppCompatActivity {
     private boolean pinningPickup = true;
     private Marker pickupMarker;
     private Marker destinationMarker;
+    private org.osmdroid.views.overlay.Polyline routeLine;
+
+    private FusedLocationProviderClient fusedLocationClient;
 
     private final ActivityResultLauncher<String> locationPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
@@ -57,6 +64,7 @@ public class CreateParcelActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         viewModel = new ViewModelProvider(this).get(ParcelViewModel.class);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         OsmMapUtils.init(this);
         setupMapView();
@@ -67,6 +75,7 @@ public class CreateParcelActivity extends AppCompatActivity {
         setupSizeSpinner();
         setupFeeCalculator();
         setupLocationButtons();
+        setupAutocomplete();
 
         binding.btnProceedToPayment.setOnClickListener(v -> proceedToPayment());
     }
@@ -101,15 +110,18 @@ public class CreateParcelActivity extends AppCompatActivity {
             pickupLat = lat;
             pickupLng = lng;
             pickupMarker.setPosition(new org.osmdroid.util.GeoPoint(lat, lng));
+            pickupMarker.setVisible(true);
             binding.etPickupAddress.setText("Pinned pickup location");
             Toast.makeText(this, "Pickup pin set", Toast.LENGTH_SHORT).show();
         } else {
             destLat = lat;
             destLng = lng;
             destinationMarker.setPosition(new org.osmdroid.util.GeoPoint(lat, lng));
+            destinationMarker.setVisible(true);
             binding.etDestinationAddress.setText("Pinned destination location");
             Toast.makeText(this, "Destination pin set", Toast.LENGTH_SHORT).show();
         }
+        updateRoute();
         binding.mapView.invalidate();
     }
 
@@ -143,8 +155,26 @@ public class CreateParcelActivity extends AppCompatActivity {
             Toast.makeText(this, "Tap the map to place the destination pin", Toast.LENGTH_SHORT).show();
         });
         binding.btnUseCurrentLocation.setOnClickListener(v -> requestCurrentLocationAutoFill());
-        binding.btnGeoPickup.setOnClickListener(v -> resolveAddress(binding.etPickupAddress.getText().toString().trim(), true));
-        binding.btnGeoDestination.setOnClickListener(v -> resolveAddress(binding.etDestinationAddress.getText().toString().trim(), false));
+    }
+
+    private void setupAutocomplete() {
+        NominatimAutocompleteHelper.attach(binding.etPickupAddress, (lat, lng, address) -> {
+            pickupLat = lat;
+            pickupLng = lng;
+            pickupMarker.setPosition(new org.osmdroid.util.GeoPoint(lat, lng));
+            pickupMarker.setVisible(true);
+            OsmMapUtils.centerOn(binding.mapView, lat, lng, 14.0);
+            updateRoute();
+        });
+
+        NominatimAutocompleteHelper.attach(binding.etDestinationAddress, (lat, lng, address) -> {
+            destLat = lat;
+            destLng = lng;
+            destinationMarker.setPosition(new org.osmdroid.util.GeoPoint(lat, lng));
+            destinationMarker.setVisible(true);
+            OsmMapUtils.centerOn(binding.mapView, lat, lng, 14.0);
+            updateRoute();
+        });
     }
 
     private void updateFeePreview() {
@@ -162,37 +192,6 @@ public class CreateParcelActivity extends AppCompatActivity {
         } catch (NumberFormatException ignored) {}
     }
 
-    private void resolveAddress(String query, boolean isPickup) {
-        if (TextUtils.isEmpty(query)) {
-            Toast.makeText(this, "Enter an address first", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        setLoading(true);
-        LocationPickerHelper.autoFillFromAddress(this, query, new LocationPickerHelper.OnLocationResolved() {
-            @Override
-            public void onResolved(double lat, double lng, String formattedAddress) {
-                setLoading(false);
-                if (isPickup) {
-                    pickupLat = lat;
-                    pickupLng = lng;
-                    binding.etPickupAddress.setText(formattedAddress);
-                    Toast.makeText(CreateParcelActivity.this, "Pickup location ready", Toast.LENGTH_SHORT).show();
-                } else {
-                    destLat = lat;
-                    destLng = lng;
-                    binding.etDestinationAddress.setText(formattedAddress);
-                    Toast.makeText(CreateParcelActivity.this, "Destination location ready", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                setLoading(false);
-                Toast.makeText(CreateParcelActivity.this, message, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     private void requestCurrentLocationAutoFill() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -202,16 +201,49 @@ public class CreateParcelActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void autoFillCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) return;
+
         setLoading(true);
-        binding.etPickupAddress.setText("Using current location...");
-        LocationPickerHelper.reverseGeocode(this, -26.2041, 28.0473, formatted -> {
+        binding.etPickupAddress.setText("Getting location...");
+        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location != null) {
+                pickupLat = location.getLatitude();
+                pickupLng = location.getLongitude();
+                pickupMarker.setPosition(new org.osmdroid.util.GeoPoint(pickupLat, pickupLng));
+                pickupMarker.setVisible(true);
+                OsmMapUtils.centerOn(binding.mapView, pickupLat, pickupLng, 15.0);
+
+                LocationPickerHelper.reverseGeocode(this, pickupLat, pickupLng, formatted -> {
+                    setLoading(false);
+                    binding.etPickupAddress.setText(TextUtils.isEmpty(formatted) ? "Current location" : formatted);
+                    updateRoute();
+                });
+            } else {
+                setLoading(false);
+                Toast.makeText(this, "Could not get current location. Ensure GPS is on.", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(e -> {
             setLoading(false);
-            binding.etPickupAddress.setText(TextUtils.isEmpty(formatted) ? "Current location" : formatted);
-            pickupLat = -26.2041;
-            pickupLng = 28.0473;
-            Toast.makeText(this, "Pickup location set from your current GPS position", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Location error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private void updateRoute() {
+        if (pickupLat != 0 && destLat != 0) {
+            if (routeLine != null) binding.mapView.getOverlays().remove(routeLine);
+            routeLine = OsmMapUtils.drawRoute(binding.mapView, pickupLat, pickupLng, destLat, destLng);
+
+            // Zoom to fit both
+            org.osmdroid.util.BoundingBox box = org.osmdroid.util.BoundingBox.fromGeoPoints(java.util.Arrays.asList(
+                    new org.osmdroid.util.GeoPoint(pickupLat, pickupLng),
+                    new org.osmdroid.util.GeoPoint(destLat, destLng)
+            ));
+            binding.mapView.zoomToBoundingBox(box, true, 100);
+        }
+        binding.mapView.invalidate();
     }
 
     private void proceedToPayment() {

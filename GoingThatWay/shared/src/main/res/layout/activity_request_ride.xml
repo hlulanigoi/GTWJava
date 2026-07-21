@@ -1,218 +1,285 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/background">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
-        app:title="Book a Ride"
-        app:titleTextColor="@color/white"
-        app:navigationIcon="@drawable/ic_arrow_back" />
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Plan Your Trip"
+            app:titleTextColor="@color/text_primary"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/text_primary" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <org.osmdroid.views.MapView
-        android:id="@+id/map_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:clickable="true"
-        android:focusable="true" />
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <!-- Background Map -->
+        <org.osmdroid.views.MapView
+            android:id="@+id/map_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/form_card"
+            app:layout_constraintTop_toTopOf="parent"
+            android:clickable="true"
+            android:focusable="true" />
 
-        <LinearLayout
+        <!-- Floating Form Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/form_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            app:cardCornerRadius="32dp"
+            app:cardElevation="16dp"
+            android:layout_marginBottom="-32dp"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <!-- Ride Type Selection -->
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Select Ride Type"
-                android:textSize="14sp" android:textStyle="bold"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="8dp" />
-
-            <RadioGroup
-                android:id="@+id/rg_ride_type"
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
-                <RadioButton android:id="@+id/rb_standard"
-                    android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:text="Standard" android:checked="true" />
-                <RadioButton android:id="@+id/rb_premium"
-                    android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:text="Premium" />
-                <RadioButton android:id="@+id/rb_shared"
-                    android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:text="Shared" />
-            </RadioGroup>
+                android:paddingBottom="48dp">
 
-            <!-- On-Demand button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_request_ride_now"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="📍 Request Ride Now (current location)"
-                android:textSize="15sp"
-                android:layout_marginBottom="16dp"
-                style="@style/Btn.Action" />
-
-            <View android:layout_width="match_parent" android:layout_height="1dp"
-                android:background="@color/divider" android:layout_marginBottom="16dp" />
-
-            <!-- Location Helpers -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_pin_pickup"
-                    android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:text="Pin Pickup"
-                    android:textSize="11sp" android:layout_marginEnd="4dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_pin_destination"
-                    android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:text="Pin Dest"
-                    android:textSize="11sp" android:layout_marginEnd="4dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_use_current_location"
-                    android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:text="Current"
-                    android:textSize="11sp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
-            </LinearLayout>
-
-            <!-- Section: Ride Details -->
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Ride Details"
-                android:textSize="14sp" android:textStyle="bold"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="10dp" />
-
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal" android:layout_marginBottom="12dp">
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:hint="Passengers"
-                    style="@style/GtwInput" android:layout_marginEnd="8dp">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_passenger_count"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:inputType="number" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <Spinner android:id="@+id/spinner_luggage_size"
-                    android:layout_width="0dp" android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:background="@android:drawable/btn_dropdown" />
-            </LinearLayout>
-
-            <!-- Section: Route -->
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Route"
-                android:textSize="14sp" android:textStyle="bold"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="10dp" />
-
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="12dp">
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:hint="Pickup Address"
-                    style="@style/GtwInput">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_pickup_address"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:inputType="textPostalAddress|textCapWords" />
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_geo_pickup"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Go" style="@style/Widget.MaterialComponents.Button.TextButton" />
-            </LinearLayout>
-
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="12dp">
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:hint="Destination Address"
-                    style="@style/GtwInput">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_destination_address"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:inputType="textPostalAddress|textCapWords" />
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_geo_destination"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Go" style="@style/Widget.MaterialComponents.Button.TextButton" />
-            </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Notes (optional)"
-                style="@style/GtwInput" android:layout_marginBottom="16dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_notes"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:inputType="textMultiLine" android:lines="2" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Booking Summary -->
-            <TextView
-                android:id="@+id/tv_booking_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="@color/primary_dark"
-                android:background="@color/primary_light"
-                android:padding="12dp"
-                android:layout_marginBottom="16dp"
-                android:visibility="gone" />
-
-            <!-- Fare preview -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/tv_fare_breakdown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:visibility="gone"
-                app:cardCornerRadius="10dp"
-                app:cardBackgroundColor="@color/primary_light">
-                <TextView
-                    android:id="@+id/tv_fare_text"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="@color/primary_dark"
-                    android:padding="14dp" />
-            </com.google.android.material.card.MaterialCardView>
+                    android:orientation="vertical"
+                    android:padding="24dp">
 
-            <ProgressBar android:id="@+id/progress_bar"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_gravity="center" android:visibility="gone"
-                android:indeterminateTint="@color/primary" android:layout_marginBottom="8dp" />
+                    <View
+                        android:layout_width="40dp"
+                        android:layout_height="4dp"
+                        android:background="@color/divider"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="16dp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_proceed_to_payment"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Proceed to Payment"
-                android:textSize="15sp"
-                style="@style/Btn.Action" />
+                    <!-- Ride Type Chips -->
+                    <RadioGroup
+                        android:id="@+id/rg_ride_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginBottom="24dp">
+                        <RadioButton android:id="@+id/rb_standard"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Standard"
+                            android:button="@null"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:background="@drawable/bg_stat_chip"
+                            android:textColor="@color/white"
+                            android:layout_marginEnd="8dp"
+                            android:checked="true" />
+                        <RadioButton android:id="@+id/rb_premium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Premium"
+                            android:button="@null"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:background="@drawable/bg_stat_chip"
+                            android:textColor="@color/white"
+                            android:layout_marginEnd="8dp" />
+                        <RadioButton android:id="@+id/rb_shared"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Shared"
+                            android:button="@null"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:background="@drawable/bg_stat_chip"
+                            android:textColor="@color/white" />
+                    </RadioGroup>
 
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+                    <!-- Form Inputs -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/GtwInput"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:hint="Pickup Location">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_pickup_address"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textPostalAddress" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_geo_pickup"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Go"
+                            style="@style/Widget.MaterialComponents.Button.TextButton" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/GtwInput"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:hint="Where to?">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_destination_address"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textPostalAddress" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_geo_destination"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Go"
+                            style="@style/Widget.MaterialComponents.Button.TextButton" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/GtwInput"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:hint="Passengers"
+                            android:layout_marginEnd="8dp">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_passenger_count"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <Spinner
+                            android:id="@+id/spinner_luggage_size"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_rounded_card"
+                            android:paddingHorizontal="12dp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/GtwInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Notes (optional)"
+                        android:layout_marginBottom="16dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_notes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textMultiLine"
+                            android:minLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Summary / Price Display -->
+                    <TextView
+                        android:id="@+id/tv_booking_summary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        android:layout_marginBottom="8dp"
+                        android:visibility="gone" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/tv_fare_breakdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="16dp"
+                        app:cardBackgroundColor="@color/accent_light"
+                        app:cardElevation="0dp"
+                        android:layout_marginBottom="24dp"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/tv_fare_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="16dp"
+                            android:textColor="@color/accent_dark"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </androidx.cardview.widget.CardView>
+
+                    <ProgressBar
+                        android:id="@+id/progress_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        android:layout_marginBottom="16dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_proceed_to_payment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CONFIRM BOOKING"
+                        style="@style/Btn.Primary" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_request_ride_now"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="REQUEST NOW (GPS)"
+                        style="@style/Btn.Outline"
+                        android:layout_marginTop="12dp" />
+
+                    <!-- Helper buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginTop="16dp">
+                        <TextView android:id="@+id/btn_pin_pickup"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pin Pickup" android:textColor="@color/accent"
+                            android:padding="8dp" android:textSize="12sp" />
+                        <View android:layout_width="1dp" android:layout_height="12dp" android:background="@color/divider" />
+                        <TextView android:id="@+id/btn_pin_destination"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pin Destination" android:textColor="@color/accent"
+                            android:padding="8dp" android:textSize="12sp" />
+                        <View android:layout_width="1dp" android:layout_height="12dp" android:background="@color/divider" />
+                        <TextView android:id="@+id/btn_use_current_location"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Current Location" android:textColor="@color/accent"
+                            android:padding="8dp" android:textSize="12sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

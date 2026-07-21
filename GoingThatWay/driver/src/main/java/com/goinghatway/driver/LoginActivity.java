@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.goinghatway.shared.SessionManager;
+import com.goinghatway.app.utils.SessionManager;
 import com.goinghatway.driver.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {

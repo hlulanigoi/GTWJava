@@ -26,6 +26,13 @@ public class SessionManager {
         editor.apply();
     }
 
+    public void saveSession(String name, String email) {
+        editor.putBoolean(Constants.KEY_IS_LOGGED_IN, true);
+        editor.putString(Constants.KEY_USER_NAME, name);
+        editor.putString(Constants.KEY_USER_EMAIL, email);
+        editor.apply();
+    }
+
     public void clearSession() {
         editor.clear();
         editor.apply();
@@ -44,4 +51,8 @@ public class SessionManager {
     public String getUserName() { return prefs.getString(Constants.KEY_USER_NAME, null); }
     public String getUserEmail() { return prefs.getString(Constants.KEY_USER_EMAIL, null); }
     public String getUserRole() { return prefs.getString(Constants.KEY_USER_ROLE, User.ROLE_USER); }
+
+    // Compatibility aliases
+    public String getName() { return getUserName() != null ? getUserName() : "Driver"; }
+    public String getEmail() { return getUserEmail() != null ? getUserEmail() : "driver@example.com"; }
 }

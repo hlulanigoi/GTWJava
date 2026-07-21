@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.goinghatway.driver.databinding.ActivityProfileBinding;
 import com.goinghatway.driver.R;
-import com.goinghatway.shared.SessionManager;
+import com.goinghatway.app.utils.SessionManager;
 
 public class ProfileActivity extends AppCompatActivity {
     private ActivityProfileBinding binding;

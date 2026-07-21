@@ -2,7 +2,13 @@ package com.goinghatway.driver.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -14,19 +20,24 @@ import com.goinghatway.driver.databinding.ActivityEarningsBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarningsActivity extends AppCompatActivity {
+public class EarningsFragment extends Fragment {
 
     private ActivityEarningsBinding binding;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityEarningsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = ActivityEarningsBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
 
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Hide toolbar if handled by Activity, but ActivityEarningsBinding has one
+        if (binding.toolbar != null) {
+            binding.toolbar.setNavigationIcon(null);
         }
 
         setupChart();
@@ -81,8 +92,8 @@ public class EarningsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

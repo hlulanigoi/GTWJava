@@ -19,7 +19,7 @@ import com.goinghatway.driver.ui.TripFormActivity;
 import com.goinghatway.driver.ui.TripListActivity;
 import com.goinghatway.driver.ui.TripRequestsActivity;
 import com.goinghatway.driver.utils.DriverAvailabilityFormatter;
-import com.goinghatway.shared.SessionManager;
+import com.goinghatway.app.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
